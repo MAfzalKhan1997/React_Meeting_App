@@ -34,11 +34,18 @@ const styles = {
 };
 
 class MyAppBar extends React.Component {
-    state = {
-        userAvail: null,
-        auth: true,
-        anchorEl: null,
-    };
+
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            myProps: props,
+            userAvail: null,
+            auth: true,
+            anchorEl: null,
+        };
+    }
+
 
     //   handleChange = event => {
     //     this.setState({ auth: event.target.checked });
@@ -60,7 +67,7 @@ class MyAppBar extends React.Component {
         AuthState()
 
         const userAvail = JSON.parse(localStorage.getItem("user"));
-        // console.log(userAvail)
+        // console.log(props)
 
         return {
             userAvail,
@@ -69,7 +76,7 @@ class MyAppBar extends React.Component {
 
     render() {
         const { classes } = this.props;
-        const { anchorEl, userAvail } = this.state;
+        const { anchorEl, userAvail, myProps } = this.state;
         const open = Boolean(anchorEl);
 
 
@@ -112,10 +119,10 @@ class MyAppBar extends React.Component {
                                     userAvail ?
                                         <div onClick={this.handleClose} style={{ outline: 'none' }}>
                                             <MenuItem>Profile</MenuItem>
-                                            <MenuItem><SignOut></SignOut></MenuItem>
+                                            <MenuItem><SignOut {...myProps}></SignOut></MenuItem>
                                         </div>
                                         :
-                                            <MenuItem onClick={this.handleClose}><SignIn></SignIn></MenuItem>
+                                        <MenuItem onClick={this.handleClose}><SignIn {...myProps}></SignIn></MenuItem>
                                 }
                             </Menu>
                         </div>

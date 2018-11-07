@@ -10,6 +10,7 @@ const authState = () => {
         } else {
             localStorage.setItem("user", null);
             console.log('User not available');
+            // props.history.push('/')
         }
     });
 }

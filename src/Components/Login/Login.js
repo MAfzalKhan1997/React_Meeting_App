@@ -37,7 +37,7 @@ class Login extends Component {
                         </Typography>
 
                         <Button className="formEle" variant="contained" color="secondary">
-                            <SignIn></SignIn>
+                            <SignIn {...this.props}></SignIn>
                         </Button>
 
                     </FormControl>

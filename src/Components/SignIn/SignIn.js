@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import firebase from '../../Config/firebase';
- 
+
 class SignIn extends Component {
- 
+
+
     signIn() {
+        var props = this.props;
 
         var provider = new firebase.auth.FacebookAuthProvider();
 
@@ -15,8 +17,6 @@ class SignIn extends Component {
             var user = result.user.toJSON();
             console.log('SignIn')
 
-            // this.addUserToDatabase(user);
-
             var userObject = {
                 Name: user.displayName,
                 email: user.email,
@@ -26,10 +26,12 @@ class SignIn extends Component {
             firebase.database().ref("/").child("users/" + user.uid).set(userObject)
                 .then(() => {
                     console.log("User added to DataBase.");
+                    props.history.push(`/profile`)
                 })
                 .catch(function (error) {
                     console.log('Error:', error.message)
                 });
+
 
         }).catch(function (error) {
             // Handle Errors here.
@@ -43,12 +45,12 @@ class SignIn extends Component {
 
         });
     }
- 
+
 
     render() {
 
         return (
-            <span onClick={this.signIn} > Sign In</span>
+            <span onClick={this.signIn.bind(this)} > Sign In</span>
         )
 
     }

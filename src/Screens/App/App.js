@@ -14,31 +14,13 @@ class App extends Component {
     };
 
   }
-
-
-  handleClick() {
  
-    this.props.history.push('/profile')
-  }
-
-  static getDerivedStateFromProps() {
-
-
-    const userAvail = JSON.parse(localStorage.getItem("user"));
-    // console.log(userAvail)
-    // { userAvail ? ()=>this.handleClick() : null }
-
-    // return {
-    //     null,
-    // }
-  }
-
   render() {
     return (
       <center>
         <div>
-          <AppBar></AppBar>
-          <Login></Login>
+          <AppBar {...this.props}></AppBar>
+          <Login {...this.props} />
         </div>
       </center>
     );

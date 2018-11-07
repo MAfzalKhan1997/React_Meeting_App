@@ -1,13 +1,20 @@
 import React, { Component } from 'react';
-import firebase from '../../Config/firebase'; 
+import firebase from '../../Config/firebase';
 
 class SignOut extends Component {
 
+    // constructor(props){
+    //     super(props)
 
-    signOut() {
+    // }
 
+    signOut() { 
+        console.log(this.props,'asdfasdf')
+// var props = this.props
         firebase.auth().signOut().then(function () {
             console.log("SignOut")
+                    // console.log(props,'asdfasdf')
+
         }).catch(function (error) {
             console.log('Error:', error.message)
         });
@@ -16,7 +23,7 @@ class SignOut extends Component {
     render() {
 
         return (
-            <span onClick={this.signOut}>Sign Out</span>
+            <span onClick={this.signOut.bind(this)}>Sign Out</span>
         )
 
     }
