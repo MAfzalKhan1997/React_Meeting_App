@@ -5,16 +5,39 @@ import MenuItem from '@material-ui/core/MenuItem';
 
 class SignIn extends Component {
 
+    // constructor(props){
+    //     super(props)
+
+
+    // }
 
     signIn() {
+
         var provider = new firebase.auth.FacebookAuthProvider();
 
         firebase.auth().signInWithPopup(provider).then(function (result) {
             // This gives you a Facebook Access Token. You can use it to access the Facebook API.
             // var token = result.credential.accessToken;
             // The signed-in user info.
+
             var user = result.user.toJSON();
-            console.log('SignIn.js', user)
+            console.log('SignIn')
+
+            // this.addUserToDatabase(user);
+
+            var userObject = {
+                Name: user.displayName,
+                email: user.email,
+                photoURL: user.photoURL,
+            };
+
+            firebase.database().ref("/").child("users/" + user.uid).set(userObject)
+                .then(() => {
+                    console.log("User added to DataBase.");
+                })
+                .catch(function (error) {
+                    console.log('Error:', error.message)
+                });
 
         }).catch(function (error) {
             // Handle Errors here.
@@ -28,13 +51,12 @@ class SignIn extends Component {
 
         });
     }
+ 
 
     render() {
 
         return (
-
-            <MenuItem onClick={this.signIn}>SignIn</MenuItem>
-
+            <MenuItem onClick={this.signIn} > SignIn</MenuItem>
         )
 
     }

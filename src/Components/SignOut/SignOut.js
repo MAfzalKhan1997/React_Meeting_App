@@ -9,7 +9,7 @@ class SignOut extends Component {
     signOut() {
 
         firebase.auth().signOut().then(function () {
-            console.log("Sign-out successful.")
+            console.log("SignOut")
         }).catch(function (error) {
             console.log('Error:', error.message)
         });
