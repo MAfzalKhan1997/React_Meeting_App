@@ -2,14 +2,15 @@ import React, { Component } from 'react';
 import './App.css'; 
 
 import AppBar from '../Components/AppBar/AppBar'
-import Auth from '../Helper/AuthState'
+import Login from '../Components/Login/Login'
 
 class App extends Component {
   render() {
     return (
       <center>
         <div>
-          <AppBar></AppBar> 
+          <AppBar></AppBar>
+          <Login></Login>
         </div>
       </center>
     );

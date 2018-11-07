@@ -1,16 +1,8 @@
 import React, { Component } from 'react';
 import firebase from '../../Config/firebase';
-
-import MenuItem from '@material-ui/core/MenuItem';
-
+ 
 class SignIn extends Component {
-
-    // constructor(props){
-    //     super(props)
-
-
-    // }
-
+ 
     signIn() {
 
         var provider = new firebase.auth.FacebookAuthProvider();
@@ -56,7 +48,7 @@ class SignIn extends Component {
     render() {
 
         return (
-            <MenuItem onClick={this.signIn} > SignIn</MenuItem>
+            <span onClick={this.signIn} > SignIn</span>
         )
 
     }

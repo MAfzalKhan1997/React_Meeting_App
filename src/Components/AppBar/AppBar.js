@@ -1,5 +1,6 @@
 import SignIn from '../SignIn/SignIn'
 import SignOut from '../SignOut/SignOut'
+import AuthState from '../../Helper/AuthState'
 
 import 'typeface-roboto';
 
@@ -34,6 +35,7 @@ const styles = {
 
 class MyAppBar extends React.Component {
     state = {
+        userAvail: null,
         auth: true,
         anchorEl: null,
     };
@@ -50,10 +52,26 @@ class MyAppBar extends React.Component {
         this.setState({ anchorEl: null });
     };
 
+    // componentDidMount() {
+
+    // }
+
+    static getDerivedStateFromProps() {
+        AuthState()
+
+        const userAvail = JSON.parse(localStorage.getItem("user"));
+        // console.log(userAvail)
+
+        return {
+            userAvail,
+        }
+    }
+
     render() {
         const { classes } = this.props;
-        const { auth, anchorEl } = this.state;
+        const { anchorEl, userAvail } = this.state;
         const open = Boolean(anchorEl);
+
 
         return (
             <div className={classes.root}>
@@ -91,13 +109,13 @@ class MyAppBar extends React.Component {
                                 onClose={this.handleClose}
                             >
                                 {
-                                    auth ?
-                                        <div onClick={this.handleClose} style={{outline:'none'}}>
+                                    userAvail ?
+                                        <div onClick={this.handleClose} style={{ outline: 'none' }}>
                                             <MenuItem>Profile</MenuItem>
-                                            <SignIn></SignIn>
-                                            <SignOut></SignOut>                    
-                                            
-                                        </div> : null
+                                            <MenuItem><SignOut></SignOut></MenuItem>
+                                        </div>
+                                        :
+                                            <MenuItem onClick={this.handleClose}><SignIn></SignIn></MenuItem>
                                 }
                             </Menu>
                         </div>

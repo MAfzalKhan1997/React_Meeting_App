@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import firebase from '../../Config/firebase';
-
-import MenuItem from '@material-ui/core/MenuItem';
+import firebase from '../../Config/firebase'; 
 
 class SignOut extends Component {
 
@@ -18,7 +16,7 @@ class SignOut extends Component {
     render() {
 
         return (
-            <MenuItem onClick={this.signOut}>SignOut</MenuItem>
+            <span onClick={this.signOut}>SignOut</span>
         )
 
     }
