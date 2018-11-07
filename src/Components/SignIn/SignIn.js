@@ -48,7 +48,7 @@ class SignIn extends Component {
     render() {
 
         return (
-            <span onClick={this.signIn} > SignIn</span>
+            <span onClick={this.signIn} > Sign In</span>
         )
 
     }

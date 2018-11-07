@@ -16,7 +16,7 @@ class SignOut extends Component {
     render() {
 
         return (
-            <span onClick={this.signOut}>SignOut</span>
+            <span onClick={this.signOut}>Sign Out</span>
         )
 
     }

@@ -4,7 +4,7 @@ import FormControl from '@material-ui/core/FormControl';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 
-import './Login.css'; 
+import './Login.css';
 import SignIn from '../SignIn/SignIn'
 
 class Login extends Component {
@@ -25,10 +25,16 @@ class Login extends Component {
 
                     <FormControl className="formDiv">
 
-                        <Typography variant="display2" >
-                            Sign In
+                        <Typography variant="h4" >
+                            MeeTup
                         </Typography>
-                        {/* <br /> */}
+                        <br />
+                        <br />
+                        <br />
+                        <br />
+                        <Typography color='primary' variant="subheading" >
+                            Get Started with FaceBook
+                        </Typography>
 
                         <Button className="formEle" variant="contained" color="secondary">
                             <SignIn></SignIn>
@@ -41,5 +47,5 @@ class Login extends Component {
     }
 }
 
- 
+
 export default Login;
