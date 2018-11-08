@@ -1,26 +1,32 @@
 import React, { Component } from 'react';
 import './App.css';
+import AuthState from '../../Helper/AuthState'
 
-import AppBar from '../../Components/AppBar/AppBar'
 import Login from '../../Components/Login/Login'
 
 class App extends Component {
 
-  constructor(props) {
-    super(props)
+  static getDerivedStateFromProps() {
+    AuthState()
 
-    this.state = {
+    const userAvail = JSON.parse(localStorage.getItem("user"));
 
-    };
-
+    return {
+      userAvail,
+    }
   }
- 
+
   render() {
+    const { userAvail } = this.state;
     return (
       <center>
         <div>
-          <AppBar {...this.props}></AppBar>
-          <Login {...this.props} />
+          {
+            !userAvail ?
+              <Login {...this.props} />
+              :
+              null
+          }
         </div>
       </center>
     );

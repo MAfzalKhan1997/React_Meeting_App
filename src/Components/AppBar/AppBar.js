@@ -19,6 +19,8 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 
+// let userAvail = JSON.parse(localStorage.getItem("user"));
+
 const styles = {
     root: {
         flexGrow: 1,
@@ -59,15 +61,11 @@ class MyAppBar extends React.Component {
         this.setState({ anchorEl: null });
     };
 
-    // componentDidMount() {
-
-    // }
 
     static getDerivedStateFromProps() {
         AuthState()
 
         const userAvail = JSON.parse(localStorage.getItem("user"));
-        // console.log(props)
 
         return {
             userAvail,
@@ -120,6 +118,7 @@ class MyAppBar extends React.Component {
                                         <div onClick={this.handleClose} style={{ outline: 'none' }}>
                                             <MenuItem>Profile</MenuItem>
                                             <MenuItem><SignOut {...myProps}></SignOut></MenuItem>
+                                            {/* {console.log('meri', myProps)} */}
                                         </div>
                                         :
                                         <MenuItem onClick={this.handleClose}><SignIn {...myProps}></SignIn></MenuItem>

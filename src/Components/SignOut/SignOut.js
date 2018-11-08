@@ -8,12 +8,14 @@ class SignOut extends Component {
 
     // }
 
-    signOut() { 
-        console.log(this.props,'asdfasdf')
-// var props = this.props
+    signOut() {
+ 
+        var props = this.props
+
         firebase.auth().signOut().then(function () {
+            
             console.log("SignOut")
-                    // console.log(props,'asdfasdf')
+            props.history.push('/')
 
         }).catch(function (error) {
             console.log('Error:', error.message)
@@ -28,6 +30,5 @@ class SignOut extends Component {
 
     }
 }
-
 
 export default SignOut;
