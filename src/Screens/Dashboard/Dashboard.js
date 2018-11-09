@@ -1,19 +1,17 @@
 import React, { Component } from 'react';
-import './App.css';
-import AuthState from '../../Helper/AuthState'
+import './Dashboard.css';
 
-import Login from '../../Components/Login/Login'
+import AuthState from '../../Helper/AuthState' 
 
-class App extends Component {
+class Profile extends Component {
 
-  constructor(){
+  constructor() {
     super()
 
-    this.state={
-      
+    this.state = {
+
     }
   }
-
 
   static getDerivedStateFromProps() {
     
@@ -31,10 +29,10 @@ class App extends Component {
       <center>
         <div>
           {
-            !userAvail ?
-              <Login {...this.props} />
-              : 
-              this.props.history.push('/profile')
+            userAvail ?
+              'Dashboard.js'
+              :
+              this.props.history.push('/')
           }
         </div>
       </center>
@@ -42,4 +40,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default Profile;

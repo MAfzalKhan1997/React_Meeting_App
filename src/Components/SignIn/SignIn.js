@@ -26,7 +26,7 @@ class SignIn extends Component {
             firebase.database().ref("/").child("users/" + user.uid).set(userObject)
                 .then(() => {
                     console.log("User added to DataBase.");
-                    props.history.push(`/profile`)
+                    props.history.push('/profile')
                 })
                 .catch(function (error) {
                     console.log('Error:', error.message)
@@ -50,7 +50,7 @@ class SignIn extends Component {
     render() {
 
         return (
-            <span onClick={this.signIn.bind(this)} > Sign In</span>
+            <span onClick={this.signIn.bind(this)}> Sign In</span>
         )
 
     }
