@@ -5,7 +5,7 @@ var config = {
   authDomain: "meetup-mak.firebaseapp.com",
   databaseURL: "https://meetup-mak.firebaseio.com",
   projectId: "meetup-mak",
-  storageBucket: "",
+  storageBucket: "meetup-mak.appspot.com",
   messagingSenderId: "1099060160126"
 };
 

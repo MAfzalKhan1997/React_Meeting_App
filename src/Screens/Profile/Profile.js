@@ -40,8 +40,8 @@ class Profile extends Component {
               userProfile ?
                 this.props.history.push('/dashboard')
                 :
-                'Profile'
-                // <CreateProfile></CreateProfile>
+                // 'Profile'
+                <CreateProfile></CreateProfile>
               :
               this.props.history.push('/')
           }
