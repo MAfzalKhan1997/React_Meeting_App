@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import './Profile.css';
 
 import CreateProfile from '../../Components/CreateProfile/CreateProfile';
-import firebase from '../../Config/firebase';
 import AuthState from '../../Helper/AuthState'
 
 class Profile extends Component {
@@ -15,37 +14,19 @@ class Profile extends Component {
     }
   }
 
-  static getDerivedStateFromProps() {
+  static getDerivedStateFromProps(props) {
 
     AuthState()
 
     const userAvail = JSON.parse(localStorage.getItem("user"));
-    console.log(userAvail)
+    const userProfile = JSON.parse(localStorage.getItem("userProfile"));
 
-    // const userProfile = JSON.parse(localStorage.getItem("userProfile"));
-    // console.log(userProfile);
+    console.log('userAvail', userAvail, 'userProfile', userProfile)
 
     return {
       userAvail,
-      // userProfile,
-    }
-
-  }
-
-  checkProfile(){
-    const userAvail = JSON.parse(localStorage.getItem("user"));
-
-    firebase.database().ref(`/profiles/${userAvail.uid}/`).once('value', (data) => {
-      console.log(data.val());
-      localStorage.setItem("userProfile",JSON.stringify(data.val()));
-    })
-
-    const userProfile = JSON.parse(localStorage.getItem("userProfile"));
-    console.log(userProfile);
-
-    this.setState({
       userProfile,
-    })
+    }
 
   }
 
@@ -59,13 +40,11 @@ class Profile extends Component {
               userProfile ?
                 this.props.history.push('/dashboard')
                 :
-                'asdfasdfsdf'
+                'Profile'
                 // <CreateProfile></CreateProfile>
               :
               this.props.history.push('/')
           }
-
-          {userAvail? this.checkProfile():null}
         </div>
       </center>
     );

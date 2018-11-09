@@ -1,43 +1,52 @@
 import React, { Component } from 'react';
 import './Dashboard.css';
 
-import AuthState from '../../Helper/AuthState' 
+import AuthState from '../../Helper/AuthState'
 
-class Profile extends Component {
+class Dashboard extends Component {
 
   constructor() {
     super()
 
     this.state = {
-
+     
     }
   }
 
-  static getDerivedStateFromProps() {
-    
+  static getDerivedStateFromProps(props) {
+
     AuthState()
     const userAvail = JSON.parse(localStorage.getItem("user"));
+    const userProfile = JSON.parse(localStorage.getItem("userProfile"));
+
+    console.log('userAvail',userAvail,'userProfile',userProfile)
 
     return {
       userAvail,
+      userProfile, 
     }
   }
 
+ 
   render() {
-    const { userAvail } = this.state;
+    const { userAvail, userProfile } = this.state;
     return (
       <center>
         <div>
           {
             userAvail ?
-              'Dashboard.js'
+              userProfile ?
+                'Dashboard'
+                :
+                this.props.history.push('/profile')
+              // <CreateProfile></CreateProfile>
               :
               this.props.history.push('/')
           }
         </div>
-      </center>
+      </center> 
     );
   }
 }
 
-export default Profile;
+export default Dashboard;

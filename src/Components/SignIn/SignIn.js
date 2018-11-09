@@ -17,6 +17,11 @@ class SignIn extends Component {
             var user = result.user.toJSON();
             console.log('SignIn')
 
+            firebase.database().ref(`/profiles/${user.uid}/`).once('value', (data) => {
+                console.log('profile value', data.val());
+                localStorage.setItem("userProfile", JSON.stringify(data.val()));
+            })
+
             var userObject = {
                 Name: user.displayName,
                 email: user.email,
@@ -26,7 +31,7 @@ class SignIn extends Component {
             firebase.database().ref("/").child("users/" + user.uid).set(userObject)
                 .then(() => {
                     console.log("User added to DataBase.");
-                    props.history.push('/profile')
+                    props.history.push('/dashboard')
                 })
                 .catch(function (error) {
                     console.log('Error:', error.message)

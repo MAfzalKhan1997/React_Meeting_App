@@ -2,8 +2,8 @@ import React from 'react';
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import AppBar from '../Components/AppBar/AppBar';
 import App from '../Screens/App/App';
-import Profile from '../Screens/Profile/Profile';
 import Dashboard from '../Screens/Dashboard/Dashboard';
+import Profile from '../Screens/Profile/Profile';
 
 
 const Routes = () => {
@@ -15,8 +15,8 @@ const Routes = () => {
 
                 <Route path='/' component={AppBar} />
                 <Route exact path='/' component={App} />
-                <Route path="/profile" component={Profile} />
                 <Route path='/dashboard' component={Dashboard} ></Route>
+                <Route path="/profile" component={Profile} />
 
             </div>
         </Router >
