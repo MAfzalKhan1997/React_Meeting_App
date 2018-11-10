@@ -131,7 +131,7 @@ class CreateProfile extends Component {
                                                 className={classes.button}
                                             >
                                                 Back
-                            </Button>
+                                            </Button>
                                             <Button
                                                 variant="contained"
                                                 color="primary"
@@ -149,7 +149,10 @@ class CreateProfile extends Component {
                 </Stepper>
                 {activeStep === steps.length && (
                     <Paper square elevation={0} className={classes.resetContainer}>
-                        <Typography>All steps completed - you&quot;re finished</Typography>
+                        <Typography>All steps completed - you&quot;re finished now</Typography>
+                        <Button variant='outlined' color='secondary' className={classes.button}>
+                            Create Profile
+                  </Button>
                         <Button onClick={this.handleReset} className={classes.button}>
                             Reset
                   </Button>

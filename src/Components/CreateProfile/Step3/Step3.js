@@ -11,6 +11,17 @@ import GridListTileBar from '@material-ui/core/GridListTileBar';
 import IconButton from '@material-ui/core/IconButton';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import ListItemText from '@material-ui/core/ListItemText';
+import Select from '@material-ui/core/Select';
+import Checkbox from '@material-ui/core/Checkbox';
+import Chip from '@material-ui/core/Chip';
+
+import FormHelperText from '@material-ui/core/FormHelperText';
+
 const styles = theme => ({
   root: {
     display: 'flex',
@@ -40,6 +51,22 @@ const styles = theme => ({
       height: 100,
     },
   },
+
+  formControl: {
+    margin: theme.spacing.unit,
+    minWidth: 120,
+    maxWidth: 300,
+  },
+  chips: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
+  chip: {
+    margin: theme.spacing.unit / 4,
+  },
+  noLabel: {
+    marginTop: theme.spacing.unit * 3,
+  },
 });
 
 const images = [
@@ -57,19 +84,49 @@ const images = [
   },
 ];
 
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
+const durations = [
+  '20',
+  '60',
+  '120',
+];
+
+function getStyles(duration, that) {
+  return {
+    fontWeight:
+      that.state.mins.indexOf(duration) === -1
+        ? that.props.theme.typography.fontWeightRegular
+        : that.props.theme.typography.fontWeightMedium,
+  };
+}
+
 class Step3 extends Component {
 
   constructor() {
     super()
 
     this.state = {
-
+      mins : [],
     }
   }
 
+  handleChange = event => {
+    this.setState({ mins: event.target.value });
+  };
 
   render() {
     const { classes } = this.props;
+    const { mins } = this.state;
 
     return (
       <div className={classes.root}>
@@ -92,6 +149,32 @@ class Step3 extends Component {
             </GridListTile>
           ))}
         </GridList>
+
+        <FormControl className={classes.formControl}>
+          <InputLabel htmlFor="select-multiple-chip">Duration</InputLabel>
+          <Select
+           style={{width:'250px'}}
+            multiple
+            value={mins}
+            onChange={this.handleChange}
+            input={<Input id="select-multiple-chip" />}
+            renderValue={selected => (
+              <div className={classes.chips}>
+                {selected.map(value => (
+                  <Chip key={value} label={value} className={classes.chip} />
+                ))}
+              </div>
+            )}
+            MenuProps={MenuProps}
+          >
+            {durations.map(duration => (
+              <MenuItem key={duration} value={duration} style={getStyles(duration, this)}>
+                {duration}
+              </MenuItem>
+            ))}
+          </Select>
+          <FormHelperText>minutes</FormHelperText>
+        </FormControl>
       </div>
 
     );
@@ -102,4 +185,4 @@ Step3.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(Step3);
+export default withStyles(styles, { withTheme: true })(Step3);
