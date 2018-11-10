@@ -3,6 +3,7 @@ import firebase from '../../Config/firebase';
 
 import Step1 from './Step1/Step1';
 import Step2 from './Step2/Step2';
+import Step3 from './Step3/Step3';
 
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
@@ -47,30 +48,30 @@ const styles = theme => ({
 
 
 class CreateProfile extends Component {
-    
+
     constructor() {
         super()
         this.state = {
             activeStep: 0,
         };
     }
-    
-    
+
+
     // static getDerivedStateFromProps() {
-        
-        // const userAvail = JSON.parse(localStorage.getItem("user"));
-        // console.log(userAvail)
-        
-        // firebase.database().ref(`/profiles/${userAvail.uid}/`).set({name:'afzal'})
-        
-        // return null
-        
+
+    // const userAvail = JSON.parse(localStorage.getItem("user"));
+    // console.log(userAvail)
+
+    // firebase.database().ref(`/profiles/${userAvail.uid}/`).set({name:'afzal'})
+
+    // return null
+
     // }
-    
+
     getSteps = () => {
-        return ['Nickname/Contact', 'Your Cool Pics', 'What would you like?'];
+        return ['Nickname/Contact', 'Your Cool Pics', 'Select Beverages', 'Set Location'];
     }
-    
+
     getStepContent = (step) => {
         switch (step) {
             case 0:
@@ -80,10 +81,10 @@ class CreateProfile extends Component {
                 return <Step2></Step2>
 
             case 2:
-                return `Try out different ad text to see what brings in the most customers,
-                        and learn how to enhance your ads using features like ad extensions.
-                        If you run into any problems with your ads, find out how to tell if
-                        they're running and how to resolve approval issues.`;
+                return <Step3></Step3>
+                
+            case 3:
+                return null
 
             default:
                 return 'Unknown step';
@@ -115,7 +116,7 @@ class CreateProfile extends Component {
 
         return (
             <div className={classes.root}>
-                <Stepper activeStep={activeStep} orientation="vertical" style={{textAlign:'left'}}>
+                <Stepper activeStep={activeStep} orientation="vertical" style={{ textAlign: 'left' }}>
                     {steps.map((label, index) => {
                         return (
                             <Step key={label}>

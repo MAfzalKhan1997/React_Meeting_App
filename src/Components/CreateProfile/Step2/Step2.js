@@ -12,10 +12,12 @@ import Button from '@material-ui/core/Button';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 
+import LinearProgress from '@material-ui/core/LinearProgress';
+
 
 const styles = theme => ({
     root: {
-        maxWidth: 400,
+        maxWidth: 300,
         flexGrow: 1,
     },
     // header: {
@@ -26,8 +28,8 @@ const styles = theme => ({
     //     backgroundColor: theme.palette.background.default,
     // },
     img: {
-        height: 280,
-        maxWidth: 400,
+        height: 250,
+        maxWidth: 300,
         overflow: 'hidden',
         display: 'block',
         width: '100%',
@@ -36,7 +38,7 @@ const styles = theme => ({
         margin: theme.spacing.unit,
     },
 });
- 
+
 
 class Step2 extends Component {
 
@@ -49,9 +51,9 @@ class Step2 extends Component {
             isUploading: false,
             progress: 0,
             avatarURL: [
-                'https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&w=400&h=250&q=60',
-                'https://images.unsplash.com/photo-1538032746644-0212e812a9e7?auto=format&fit=crop&w=400&h=250&q=60',
-                'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=400&h=250&q=80'
+                'https://bootdey.com/img/Content/avatar/avatar7.png',
+                'https://bootdey.com/img/Content/avatar/avatar7.png',
+                'https://bootdey.com/img/Content/avatar/avatar7.png'
             ],
 
             activeStep: 0,
@@ -99,64 +101,62 @@ class Step2 extends Component {
 
     render() {
         const { classes, theme } = this.props;
-        const { activeStep, avatarURL } = this.state;
+        const { activeStep, avatarURL, isUploading } = this.state;
         const maxSteps = avatarURL.length;
 
         return (
-            <div>
-                <form>
-                    {this.state.isUploading && <p>Progress: {this.state.progress}</p>}
-                </form>
-
-                <div className={classes.root}>
-                    <Paper square elevation={1}>
-                        <Button variant='contained' color='secondary' style={{ width: '100%', height: '50px', borderRadius: '0px' }} >
-                            <label>
-                                click here to select your awesome pic
+            <div className={classes.root}>
+                <Paper square elevation={1}>
+                    <Button variant='contained' color='secondary' style={{ width: '100%', height: '50px', borderRadius: '0px' }} >
+                        <label>
+                            click here to select your pic {activeStep + 1}
                             <FileUploader
-                                    hidden
-                                    accept="image/*"
-                                    randomizeFilename
-                                    storageRef={firebase.storage().ref('images/usersProfile')}
-                                    onUploadStart={this.handleUploadStart}
-                                    onUploadError={this.handleUploadError}
-                                    onUploadSuccess={this.handleUploadSuccess}
-                                    onProgress={this.handleProgress}
-                                />
-                            </label>
-                        </Button>
-                        <img
-                            className={classes.img}
-                            src={avatarURL[activeStep]}
-                            alt="Your Awesome Pic"
-                        />
-                        <MobileStepper
-                            steps={maxSteps}
-                            position="static"
-                            activeStep={activeStep}
-                            className={classes.mobileStepper}
-                            nextButton={
-                                <Button size="small" onClick={this.handleNext} disabled={activeStep === maxSteps - 1}>
-                                    Next
+                                hidden
+                                accept="image/*"
+                                randomizeFilename
+                                storageRef={firebase.storage().ref('images/usersProfile')}
+                                onUploadStart={this.handleUploadStart}
+                                onUploadError={this.handleUploadError}
+                                onUploadSuccess={this.handleUploadSuccess}
+                                onProgress={this.handleProgress}
+                            />
+                        </label>
+                    </Button>
+                    <img
+                        className={classes.img}
+                        src={avatarURL[activeStep]}
+                        alt="Your Awesome Pic"
+                    />
+                    <MobileStepper
+                        steps={maxSteps}
+                        position="static"
+                        activeStep={activeStep}
+                        className={classes.mobileStepper}
+                        nextButton={
+                            <Button size="small" onClick={this.handleNext} disabled={isUploading ? true : activeStep === maxSteps - 1}>
+                                Next
                                     {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
+                            </Button>
+                        }
+                        backButton={
+                            <Button size="small" onClick={this.handleBack} disabled={isUploading ? true : activeStep === 0}>
+                                {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
+                                Back
                                 </Button>
-                            }
-                            backButton={
-                                <Button size="small" onClick={this.handleBack} disabled={activeStep === 0}>
-                                    {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
-                                    Back
-                                </Button>
-                            }
-                        />
-                    </Paper>
-                </div>
-
+                        }
+                    />
+                    {isUploading ?
+                        <LinearProgress variant="determinate" value={this.state.progress} />
+                        :
+                        null
+                    }
+                </Paper>
             </div>
         );
     }
 }
 
- 
+
 Step2.propTypes = {
     classes: PropTypes.object.isRequired,
     theme: PropTypes.object.isRequired,
