@@ -69,7 +69,7 @@ class CreateProfile extends Component {
     // }
 
     getSteps = () => {
-        return ['Nickname/Contact', 'Your Cool Pics', 'Select Beverages', 'Set Location'];
+        return ['Nickname/Contact', 'Your Cool Pics', 'Beverages/Duration', 'Set Location'];
     }
 
     getStepContent = (step) => {
@@ -82,7 +82,7 @@ class CreateProfile extends Component {
 
             case 2:
                 return <Step3></Step3>
-                
+
             case 3:
                 return null
 
