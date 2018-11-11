@@ -4,6 +4,7 @@ import firebase from '../../Config/firebase';
 import Step1 from './Step1/Step1';
 import Step2 from './Step2/Step2';
 import Step3 from './Step3/Step3';
+import Step4 from './Step4/Step4';
 
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
@@ -15,16 +16,13 @@ import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 
+// import Snackbar from '@material-ui/core/Snackbar';
+// import Fade from '@material-ui/core/Fade';
 
-// import Input from '@material-ui/core/Input';
-// import InputLabel from '@material-ui/core/InputLabel';
-// import InputAdornment from '@material-ui/core/InputAdornment';
-// import FormControl from '@material-ui/core/FormControl';
-// import TextField from '@material-ui/core/TextField';
-// import Grid from '@material-ui/core/Grid';
-// import Person from '@material-ui/icons/PersonOutlined';
-// import LocalPhone from '@material-ui/icons/LocalPhoneOutlined';
-
+import Snackbar from '@material-ui/core/Snackbar';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
+import InfoIcon from '@material-ui/icons/Info';
 
 const styles = theme => ({
     root: {
@@ -44,6 +42,15 @@ const styles = theme => ({
     // margin: {
     //     margin: theme.spacing.unit,
     // },
+    close: {
+        padding: theme.spacing.unit / 2,
+    },
+    iconVariant: {
+        opacity: 0.9,
+        marginRight: theme.spacing.unit,
+        marginBottom: '-5px',
+        fontSize: '20px'
+    },
 });
 
 
@@ -52,8 +59,14 @@ class CreateProfile extends Component {
     constructor() {
         super()
         this.state = {
+            nickName: '',
+            contact: '',
+
             activeStep: 0,
         };
+
+        this.updateText = this.updateText.bind(this);
+
     }
 
 
@@ -68,6 +81,19 @@ class CreateProfile extends Component {
 
     // }
 
+    async    updateText(e) {
+
+        if (e.target.name === 'Nickname') {
+            await this.setState({ nickName: e.target.value })
+            // console.log('nick', this.state.nickName)
+        }
+        else
+            if (e.target.name === 'Contact') {
+                await this.setState({ contact: e.target.value })
+                // console.log('contact', this.state.contact)
+            }
+    }
+
     getSteps = () => {
         return ['Nickname/Contact', 'Your Cool Pics', 'Beverages/Duration', 'Set Location'];
     }
@@ -75,7 +101,7 @@ class CreateProfile extends Component {
     getStepContent = (step) => {
         switch (step) {
             case 0:
-                return <Step1></Step1>
+                return <Step1 updateText={this.updateText}></Step1>
 
             case 1:
                 return <Step2></Step2>
@@ -84,17 +110,43 @@ class CreateProfile extends Component {
                 return <Step3></Step3>
 
             case 3:
-                return null
+                return <Step4></Step4>
 
             default:
                 return 'Unknown step';
         }
     }
 
+
     handleNext = () => {
-        this.setState(state => ({
-            activeStep: state.activeStep + 1,
-        }));
+        const { activeStep, nickName, contact } = this.state;
+
+        switch (activeStep) {
+            case 0:
+                if ((nickName && contact) === '') {
+                    this.setState(state => ({
+                        // activeStep: state.activeStep + 1,
+                        snackOpen: true,
+                    }));
+                }
+                else {
+                    this.setState(state => ({
+                        activeStep: state.activeStep + 1,
+                    }));
+                } 
+                
+            case 1:
+            // return <Step2></Step2>
+
+            case 2:
+            // return <Step3></Step3>
+
+            case 3:
+            // return <Step4></Step4>
+
+            default:
+                return 'Unknown step';
+        }
     };
 
     handleBack = () => {
@@ -109,55 +161,106 @@ class CreateProfile extends Component {
         });
     };
 
+    handleClose = () => {
+        this.setState({ snackOpen: false });
+    };
+
+
     render() {
         const { classes } = this.props;
         const steps = this.getSteps();
         const { activeStep } = this.state;
 
         return (
-            <div className={classes.root}>
-                <Stepper activeStep={activeStep} orientation="vertical" style={{ textAlign: 'left' }}>
-                    {steps.map((label, index) => {
-                        return (
-                            <Step key={label}>
-                                <StepLabel>{label}</StepLabel>
-                                <StepContent>
-                                    {this.getStepContent(index)}
-                                    <div className={classes.actionsContainer}>
-                                        <div>
-                                            <Button
-                                                disabled={activeStep === 0}
-                                                onClick={this.handleBack}
-                                                className={classes.button}
-                                            >
-                                                Back
+            <div>
+                <Snackbar
+                    //   key={key}
+                    anchorOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                    }}
+                    open={this.state.snackOpen}
+                    autoHideDuration={6000}
+                    onClose={this.handleClose}
+                    //   onExited={this.handleExited}
+                    ContentProps={{
+                        'aria-describedby': 'message-id',
+                    }}
+                    message={<span id="message-id">
+                        <InfoIcon className={classes.iconVariant} />
+                        Please fill all the fields</span>}
+                    action={[
+                        <IconButton
+                            key="close"
+                            aria-label="Close"
+                            color="inherit"
+                            className={classes.close}
+                            onClick={this.handleClose}
+                        >
+                            <CloseIcon />
+                        </IconButton>,
+                    ]}
+                />
+
+                <div className={classes.root}>
+
+                    {/* <Snackbar
+                    open={this.state.open}
+                    onClose={this.handleClose}
+                    TransitionComponent={Fade}
+                    ContentProps={{
+                        'aria-describedby': 'message-id',
+                    }}
+                    message={<span id="message-id">I love snacks</span>}
+                /> */}
+
+
+
+                    <Stepper activeStep={activeStep} orientation="vertical" style={{ textAlign: 'left' }}>
+                        {steps.map((label, index) => {
+                            return (
+                                <Step key={label}>
+                                    <StepLabel>{label}</StepLabel>
+                                    <StepContent>
+                                        {this.getStepContent(index)}
+                                        <div className={classes.actionsContainer}>
+                                            <div>
+                                                <Button
+                                                    disabled={activeStep === 0}
+                                                    onClick={this.handleBack}
+                                                    className={classes.button}
+                                                >
+                                                    Back
                                             </Button>
-                                            <Button
-                                                variant="contained"
-                                                color="primary"
-                                                onClick={this.handleNext}
-                                                className={classes.button}
-                                            >
-                                                {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                                            </Button>
+                                                <Button
+                                                    variant="contained"
+                                                    color="primary"
+                                                    onClick={this.handleNext}
+                                                    className={classes.button}
+                                                >
+                                                    {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                                                </Button>
+                                            </div>
                                         </div>
-                                    </div>
-                                </StepContent>
-                            </Step>
-                        );
-                    })}
-                </Stepper>
-                {activeStep === steps.length && (
-                    <Paper square elevation={0} className={classes.resetContainer}>
-                        <Typography>All steps completed - you&quot;re finished now</Typography>
-                        <Button variant='outlined' color='secondary' className={classes.button}>
-                            Create Profile
+                                    </StepContent>
+                                </Step>
+                            );
+                        })}
+                    </Stepper>
+                    {activeStep === steps.length && (
+                        <Paper square elevation={0} className={classes.resetContainer}>
+                            <Typography>All steps completed - you&quot;re finished now</Typography>
+                            <Button variant='outlined' color='secondary' className={classes.button}>
+                                Create Profile
                   </Button>
-                        <Button onClick={this.handleReset} className={classes.button}>
-                            Reset
+                            <br />
+                            <Button onClick={this.handleReset} className={classes.button}>
+                                Reset
                   </Button>
-                    </Paper>
-                )}
+                        </Paper>
+                    )}
+                </div>
+
             </div>
         );
     }

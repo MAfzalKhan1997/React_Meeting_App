@@ -38,7 +38,7 @@ class Step1 extends Component {
     //   }
 
     render() { 
-        const { classes } = this.props;
+        const { classes, updateText } = this.props;
         return (
             <div>
                 <FormControl className={classes.margin}>
@@ -47,7 +47,9 @@ class Step1 extends Component {
                             <Person color='primary' />
                         </Grid>
                         <Grid item>
-                            <TextField id="input-with-icon-grid" label="Nickname" />
+                            <TextField id="input-with-icon-grid" name='Nickname' label="Nickname" 
+                            onChange={(e) => updateText(e) }
+                            />
                         </Grid>
                     </Grid>
                 </FormControl>
@@ -57,7 +59,9 @@ class Step1 extends Component {
                             <LocalPhone color='primary' />
                         </Grid>
                         <Grid item>
-                            <TextField id="input-with-icon-grid" type='number' label="Contact" />
+                            <TextField id="input-with-icon-grid" type='number'  name='Contact' label="Contact"
+                            onChange={(e) => updateText(e) }
+                            />
                         </Grid>
                     </Grid>
                 </FormControl>

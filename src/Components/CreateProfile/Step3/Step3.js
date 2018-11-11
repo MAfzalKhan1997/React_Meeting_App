@@ -15,9 +15,9 @@ import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
-import ListItemText from '@material-ui/core/ListItemText';
+// import ListItemText from '@material-ui/core/ListItemText';
 import Select from '@material-ui/core/Select';
-import Checkbox from '@material-ui/core/Checkbox';
+// import Checkbox from '@material-ui/core/Checkbox';
 import Chip from '@material-ui/core/Chip';
 
 import FormHelperText from '@material-ui/core/FormHelperText';
@@ -53,7 +53,7 @@ const styles = theme => ({
   },
 
   formControl: {
-    margin: theme.spacing.unit,
+    marginTop: theme.spacing.unit,
     minWidth: 120,
     maxWidth: 300,
   },
@@ -153,7 +153,7 @@ class Step3 extends Component {
         <FormControl className={classes.formControl}>
           <InputLabel htmlFor="select-multiple-chip">Duration</InputLabel>
           <Select
-           style={{width:'250px'}}
+           style={{width:'300px'}}
             multiple
             value={mins}
             onChange={this.handleChange}
