@@ -39,6 +39,13 @@ const styles = theme => ({
     },
 });
 
+const dummyImages = [
+
+    'https://bootdey.com/img/Content/avatar/avatar7.png',
+    'https://bootdey.com/img/Content/avatar/avatar7.png',
+    'https://bootdey.com/img/Content/avatar/avatar7.png'
+]
+
 
 class Step2 extends Component {
 
@@ -50,16 +57,12 @@ class Step2 extends Component {
             avatar: "",
             isUploading: false,
             progress: 0,
-            avatarURL: [
-                'https://bootdey.com/img/Content/avatar/avatar7.png',
-                'https://bootdey.com/img/Content/avatar/avatar7.png',
-                'https://bootdey.com/img/Content/avatar/avatar7.png'
-            ],
+            avatarURL: [],
 
             activeStep: 0,
         };
     }
-
+ 
 
     handleNext = () => {
         this.setState(prevState => ({
@@ -95,6 +98,7 @@ class Step2 extends Component {
             .then(url => {
                 avatarURL[activeStep] = url;
                 this.setState({ avatarURL, });
+                this.props.getAvatars(avatarURL);
             })
     };
 
@@ -102,7 +106,7 @@ class Step2 extends Component {
     render() {
         const { classes, theme } = this.props;
         const { activeStep, avatarURL, isUploading } = this.state;
-        const maxSteps = avatarURL.length;
+        const maxSteps = dummyImages.length;
 
         return (
             <div className={classes.root}>
@@ -124,7 +128,7 @@ class Step2 extends Component {
                     </Button>
                     <img
                         className={classes.img}
-                        src={avatarURL[activeStep]}
+                        src={avatarURL[activeStep] ? avatarURL[activeStep] : dummyImages[activeStep]}
                         alt="Your Awesome Pic"
                     />
                     <MobileStepper

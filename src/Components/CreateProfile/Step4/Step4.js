@@ -8,9 +8,9 @@ import Paper from '@material-ui/core/Paper';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 const styles = theme => ({
-  root: { 
-    maxWidth:'700px',
-    minWidth:'200px',
+  root: {
+    maxWidth: '700px',
+    minWidth: '200px',
   },
 
   progress: {
@@ -33,7 +33,7 @@ class Step4 extends Component {
     this.getCurrPosition = this.getCurrPosition.bind(this);
   }
 
-  
+
   componentWillMount() {
     this.setPosition();
   }
@@ -42,45 +42,48 @@ class Step4 extends Component {
 
   setPosition() {
     navigator.geolocation.getCurrentPosition(position => {
-      this.setState({ coords: position.coords });
+      this.setState({
+        coords:
+        {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude
+        }
+      });
+      this.props.getCoords(this.state.coords)
+      // console.log('initialset', this.state.coords);
     })
   }
 
   getCurrPosition({ latitude, longitude }) {
-    // console.log(lat, lng);
+
     this.setState({ coords: { latitude, longitude } })
+    this.props.getCoords(this.state.coords)
+    // console.log('getcurr', this.state.coords);
   }
-
-  // submit() {
-  //   const { coords } = this.state;
-  //   let location = [coords.latitude, coords.longitude];
-  //   this.props.mapNext(location);
-  // }
-
+ 
 
   render() {
     const { classes } = this.props;
     const { coords } = this.state;
-    console.log(coords)
     return (
       <div>
         <Paper className={classes.root} elevation={2}>
-        {
-          coords ? <MyMapComponent
-          isMarkerShown
-          googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places"
-          loadingElement={<div style={{ height: `100%` }} />}
-          containerElement={<div style={{ height: `40vh` }} />}
-          mapElement={<div style={{ height: `100%` }} />}
-          coords={coords}
-          getCurrentPosition={this.getCurrPosition}
-        />
-      :
-      <center>
-      <CircularProgress className={classes.progress} />
-      </center>
-      } 
-    </Paper>
+          {
+            coords ? <MyMapComponent
+              isMarkerShown
+              googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places"
+              loadingElement={<div style={{ height: `100%` }} />}
+              containerElement={<div style={{ height: `40vh` }} />}
+              mapElement={<div style={{ height: `100%` }} />}
+              coords={coords}
+              getCurrentPosition={this.getCurrPosition}
+            />
+              :
+              <center>
+                <CircularProgress className={classes.progress} />
+              </center>
+          }
+        </Paper>
       </div>
     )
   }

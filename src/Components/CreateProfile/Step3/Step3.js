@@ -9,6 +9,7 @@ import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 import IconButton from '@material-ui/core/IconButton';
+import StarIcon from '@material-ui/icons/Star';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 
 import Input from '@material-ui/core/Input';
@@ -41,7 +42,7 @@ const styles = theme => ({
   titleBar: {
     background:
       'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)',
-  }, 
+  },
 
   image: {
     position: 'relative',
@@ -67,7 +68,9 @@ const styles = theme => ({
   noLabel: {
     marginTop: theme.spacing.unit * 3,
   },
+
 });
+
 
 const images = [
   {
@@ -83,6 +86,7 @@ const images = [
     title: 'Cocktail',
   },
 ];
+
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -116,24 +120,57 @@ class Step3 extends Component {
     super()
 
     this.state = {
-      mins : [],
+      mins: [],
+      beverages: [],
+      stared: [false, false, false],
     }
+
+    // this.selectBev = this.selectBev.bind(this);
   }
 
-  handleChange = event => {
-    this.setState({ mins: event.target.value });
+  async selectBev(bev, index) {
+    const { beverages, stared } = this.state;
+
+    if (stared[index]) {
+      const bevIndex = beverages.indexOf(bev)
+      beverages.splice(bevIndex, 1)
+      stared[index] = false;
+      this.setState({
+        beverages,
+        stared,
+      });
+    }
+
+    else {
+      beverages.push(bev);
+      stared[index] = true;
+      await this.setState({
+        beverages,
+        stared,
+      });
+    }
+    console.log(beverages)
+
+    this.props.getBevs(beverages);
+  }
+
+  handleChange(event) { 
+    
+    this.setState({ mins: event.target.value } ,
+       () => this.props.getMins(this.state.mins) );
+ 
   };
 
   render() {
     const { classes } = this.props;
-    const { mins } = this.state;
-
+    const { mins, stared } = this.state;
+console.log('render',mins)
     return (
       <div className={classes.root}>
         <GridList spacing={1} className={classes.gridList} cols={3}>
-          {images.map(image => (
+          {images.map((image, index) => (
             <GridListTile key={image.title} cols={1} rows={1} className={classes.image} >
-              <img src={image.url} alt={image.title}/>
+              <img src={image.url} alt={image.title} />
               <GridListTileBar
                 title={image.title}
                 classes={{
@@ -141,8 +178,8 @@ class Step3 extends Component {
                   title: classes.title,
                 }}
                 actionIcon={
-                  <IconButton style={{color:'white'}}>
-                    <StarBorderIcon />
+                  <IconButton onClick={() => { this.selectBev(image.title, index) }} style={{ color: 'white' }}>
+                    {stared[index] ? <StarIcon /> : <StarBorderIcon />}
                   </IconButton>
                 }
               />
@@ -153,10 +190,10 @@ class Step3 extends Component {
         <FormControl className={classes.formControl}>
           <InputLabel htmlFor="select-multiple-chip">Duration</InputLabel>
           <Select
-           style={{width:'300px'}}
+            style={{ width: '300px' }}
             multiple
             value={mins}
-            onChange={this.handleChange}
+            onChange={(e) => {this.handleChange(e)}}
             input={<Input id="select-multiple-chip" />}
             renderValue={selected => (
               <div className={classes.chips}>

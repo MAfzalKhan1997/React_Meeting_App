@@ -61,11 +61,19 @@ class CreateProfile extends Component {
         this.state = {
             nickName: '',
             contact: '',
+            avatarURL: [],
+            beverages: [],
+            mins: [],
+            coords: null,
 
             activeStep: 0,
         };
 
         this.updateText = this.updateText.bind(this);
+        this.getAvatars = this.getAvatars.bind(this);
+        this.getBevs = this.getBevs.bind(this);
+        this.getMins = this.getMins.bind(this);
+        this.getCoords = this.getCoords.bind(this);
 
     }
 
@@ -81,7 +89,7 @@ class CreateProfile extends Component {
 
     // }
 
-    async    updateText(e) {
+    async updateText(e) {
 
         if (e.target.name === 'Nickname') {
             await this.setState({ nickName: e.target.value })
@@ -94,6 +102,31 @@ class CreateProfile extends Component {
             }
     }
 
+    async getAvatars(avatars) {
+
+        await this.setState({ avatarURL: avatars })
+        console.log('avatarURL', this.state.avatarURL)
+    }
+
+    async getBevs(bevs) {
+
+        await this.setState({ beverages: bevs })
+        console.log('beverages', this.state.beverages)
+    }
+
+    async getMins(mins) {
+
+        await this.setState({ mins: mins })
+        console.log('mins', this.state.mins)
+    }
+
+    async getCoords(coords) {
+
+        await this.setState({ coords, })
+        console.log('coords', this.state.coords)
+    }
+
+
     getSteps = () => {
         return ['Nickname/Contact', 'Your Cool Pics', 'Beverages/Duration', 'Set Location'];
     }
@@ -104,13 +137,13 @@ class CreateProfile extends Component {
                 return <Step1 updateText={this.updateText}></Step1>
 
             case 1:
-                return <Step2></Step2>
+                return <Step2 getAvatars={this.getAvatars}></Step2>
 
             case 2:
-                return <Step3></Step3>
+                return <Step3 getBevs={this.getBevs} getMins={this.getMins}></Step3>
 
             case 3:
-                return <Step4></Step4>
+                return <Step4 getCoords={this.getCoords}></Step4>
 
             default:
                 return 'Unknown step';
@@ -119,13 +152,12 @@ class CreateProfile extends Component {
 
 
     handleNext = () => {
-        const { activeStep, nickName, contact } = this.state;
+        const { activeStep, nickName, contact, avatarURL, beverages, mins, coords } = this.state;
 
         switch (activeStep) {
             case 0:
                 if ((nickName && contact) === '') {
-                    this.setState(state => ({
-                        // activeStep: state.activeStep + 1,
+                    this.setState(state => ({ 
                         snackOpen: true,
                     }));
                 }
@@ -133,20 +165,54 @@ class CreateProfile extends Component {
                     this.setState(state => ({
                         activeStep: state.activeStep + 1,
                     }));
-                } 
-                
+                }
+                break;
+
             case 1:
-            // return <Step2></Step2>
+                if (avatarURL.length !== 3) {
+                    this.setState(state => ({ 
+                        snackOpen: true,
+                    }));
+                }
+                else {
+                    this.setState(state => ({
+                        activeStep: state.activeStep + 1,
+                    }));
+                }
+                break;
 
             case 2:
-            // return <Step3></Step3>
+                if ((beverages.length >= 1) && (mins.length >= 1)) {
+                    this.setState(state => ({
+                        activeStep: state.activeStep + 1,
+                    }));
+                }
+                else {
+                    this.setState(state => ({
+                        snackOpen: true,
+                    }));
+                }
+                break;
 
             case 3:
-            // return <Step4></Step4>
+            if (coords) {
+                this.setState(state => ({
+                    activeStep: state.activeStep + 1,
+                }));
+            }
+            else {
+                this.setState(state => ({
+                    snackOpen: true,
+                }));
+            }
+            break; 
 
             default:
                 return 'Unknown step';
         }
+        // this.setState(state => ({
+        //     activeStep: state.activeStep + 1,
+        // }));
     };
 
     handleBack = () => {
@@ -250,7 +316,7 @@ class CreateProfile extends Component {
                     {activeStep === steps.length && (
                         <Paper square elevation={0} className={classes.resetContainer}>
                             <Typography>All steps completed - you&quot;re finished now</Typography>
-                            <Button variant='outlined' color='secondary' className={classes.button}>
+                            <Button variant='outlined' size="large" color='secondary' className={classes.button}>
                                 Create Profile
                   </Button>
                             <br />
