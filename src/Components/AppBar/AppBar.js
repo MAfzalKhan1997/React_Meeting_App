@@ -104,16 +104,17 @@ class MyAppBar extends React.Component {
         const { anchorEl, userAvail, myProps } = this.state;
         const open = Boolean(anchorEl);
         
-        const drawer1 = [<DashboardIcon/>];
-        const drawer2 = [<InboxIcon/>,<StarIcon/>,<SendIcon/>];
-        const drawer3 = [<DeleteIcon/>,<ErrorIcon/>];
+        const icons1 = [<DashboardIcon/>];
+        const func1 = [() => this.props.history.push('/dashboard')];
+        const icons2 = [<InboxIcon/>,<StarIcon/>,<SendIcon/>];
+        const icons3 = [<DeleteIcon/>,<ErrorIcon/>];
         
         const sideList = (
             <div className={classes.list}>
                 <List>
                     {['Dashboard'].map((text, index) => (
-                        <ListItem button key={text}>
-                            <ListItemIcon>{drawer1[index]}</ListItemIcon>
+                        <ListItem button onClick={func1[index]} key={text}>
+                            <ListItemIcon>{icons1[index]}</ListItemIcon>
                             <ListItemText primary={text} />
                         </ListItem>
                     ))}
@@ -122,7 +123,7 @@ class MyAppBar extends React.Component {
                 <List>
                     {['Inbox', 'Starred', 'Send email'].map((text, index) => (
                         <ListItem button key={text}>
-                            <ListItemIcon>{drawer2[index]}</ListItemIcon>
+                            <ListItemIcon>{icons2[index]}</ListItemIcon>
                             <ListItemText primary={text} />
                         </ListItem>
                     ))}
@@ -131,7 +132,7 @@ class MyAppBar extends React.Component {
                 <List>
                     {['Trash', 'Spam'].map((text, index) => (
                         <ListItem button key={text}>
-                            <ListItemIcon>{drawer3[index]}</ListItemIcon>
+                            <ListItemIcon>{icons3[index]}</ListItemIcon>
                             <ListItemText primary={text} />
                         </ListItem>
                     ))}

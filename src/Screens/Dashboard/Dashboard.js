@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './Dashboard.css';
 
+import DashComp from '../../Components/DashComp/DashComp'
 import AuthState from '../../Helper/AuthState'
 
 class Dashboard extends Component {
@@ -50,7 +51,8 @@ class Dashboard extends Component {
           {
             userAvail ?
               userProfile ?
-                'Dashboard'
+                // 'Dashboard'
+                <DashComp></DashComp>
                 :
                 this.props.history.push('/profile')
               // <CreateProfile></CreateProfile>
