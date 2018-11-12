@@ -19,6 +19,21 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 
+import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
+// import Button from '@material-ui/core/Button';
+import List from '@material-ui/core/List';
+import Divider from '@material-ui/core/Divider';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import InboxIcon from '@material-ui/icons/Inbox';
+// import MailIcon from '@material-ui/icons/MailOutlined';
+import DashboardIcon from '@material-ui/icons/DashboardOutlined';
+import StarIcon from '@material-ui/icons/StarBorderOutlined';
+import SendIcon from '@material-ui/icons/SendOutlined';
+import DeleteIcon from '@material-ui/icons/DeleteOutlined';
+import ErrorIcon from '@material-ui/icons/ErrorOutline';
+
 // let userAvail = JSON.parse(localStorage.getItem("user"));
 
 const styles = {
@@ -33,6 +48,10 @@ const styles = {
         marginLeft: -12,
         marginRight: 20,
     },
+
+    list: {
+        width: 250,
+    },
 };
 
 class MyAppBar extends React.Component {
@@ -45,9 +64,21 @@ class MyAppBar extends React.Component {
             userAvail: null,
             auth: true,
             anchorEl: null,
+            
+            sidePanel: false,
         };
     }
+    
+    static getDerivedStateFromProps() {
+        AuthState()
 
+        const userAvail = JSON.parse(localStorage.getItem("user"));
+
+        return {
+            userAvail,
+        }
+    }
+    
 
     //   handleChange = event => {
     //     this.setState({ auth: event.target.checked });
@@ -60,30 +91,79 @@ class MyAppBar extends React.Component {
     handleClose = () => {
         this.setState({ anchorEl: null });
     };
+    
 
-
-    static getDerivedStateFromProps() {
-        AuthState()
-
-        const userAvail = JSON.parse(localStorage.getItem("user"));
-
-        return {
-            userAvail,
-        }
-    }
-
+    toggleDrawer = (open) => () => {
+        this.setState({
+            sidePanel: open,
+        });
+    };
+    
     render() {
         const { classes } = this.props;
         const { anchorEl, userAvail, myProps } = this.state;
         const open = Boolean(anchorEl);
-
+        
+        const drawer1 = [<DashboardIcon/>];
+        const drawer2 = [<InboxIcon/>,<StarIcon/>,<SendIcon/>];
+        const drawer3 = [<DeleteIcon/>,<ErrorIcon/>];
+        
+        const sideList = (
+            <div className={classes.list}>
+                <List>
+                    {['Dashboard'].map((text, index) => (
+                        <ListItem button key={text}>
+                            <ListItemIcon>{drawer1[index]}</ListItemIcon>
+                            <ListItemText primary={text} />
+                        </ListItem>
+                    ))}
+                </List>
+                <Divider />
+                <List>
+                    {['Inbox', 'Starred', 'Send email'].map((text, index) => (
+                        <ListItem button key={text}>
+                            <ListItemIcon>{drawer2[index]}</ListItemIcon>
+                            <ListItemText primary={text} />
+                        </ListItem>
+                    ))}
+                </List>
+                <Divider />
+                <List>
+                    {['Trash', 'Spam'].map((text, index) => (
+                        <ListItem button key={text}>
+                            <ListItemIcon>{drawer3[index]}</ListItemIcon>
+                            <ListItemText primary={text} />
+                        </ListItem>
+                    ))}
+                </List>
+            </div>
+        );
 
         return (
             <div className={classes.root}>
+                
+                {userAvail ?
+                    <SwipeableDrawer
+                        open={this.state.sidePanel}
+                        onClose={this.toggleDrawer(false)}
+                        onOpen={this.toggleDrawer(true)}
+                    >
+                        <div
+                            tabIndex={0}
+                            role="button"
+                            onClick={this.toggleDrawer(false)}
+                            onKeyDown={this.toggleDrawer(false)}
+                        >
+                            {sideList}
+                        </div>
+                    </SwipeableDrawer>
+                    :
+                    null
+                }
 
                 <AppBar position="static">
                     <Toolbar>
-                        <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
+                        <IconButton onClick={this.toggleDrawer(true)} className={classes.menuButton} color="inherit" aria-label="Menu">
                             <MenuIcon />
                         </IconButton>
                         <Typography variant="h6" color="inherit" className={classes.grow}>

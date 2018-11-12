@@ -19,7 +19,7 @@ class Dashboard extends Component {
     const userAvail = JSON.parse(localStorage.getItem("user"));
     const userProfile = JSON.parse(localStorage.getItem("userProfile"));
 
-    console.log('userAvail',userAvail,'userProfile',userProfile)
+    console.log('derived',userAvail,'derived',userProfile)
 
     return {
       userAvail,
@@ -27,7 +27,21 @@ class Dashboard extends Component {
     }
   }
 
- 
+  // componentDidMount() {
+
+  //   AuthState()
+  //   const userAvail = JSON.parse(localStorage.getItem("user"));
+  //   const userProfile = JSON.parse(localStorage.getItem("userProfile"));
+
+  //   console.log('did',userAvail,'did',userProfile)
+
+  //   this.setState({
+  //     userAvail,
+  //     userProfile, 
+  //   })
+
+  // }
+
   render() {
     const { userAvail, userProfile } = this.state;
     return (

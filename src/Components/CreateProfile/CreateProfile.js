@@ -128,7 +128,7 @@ class CreateProfile extends Component {
 
 
     getSteps = () => {
-        return ['Nickname/Contact', 'Your Cool Pics', 'Beverages/Duration', 'Set Location'];
+        return ['Nickname/Contact', 'Your Cool Pics | *3 Req', 'Beverages/Duration | *both atleast 1 or more*', 'Set Location'];
     }
 
     getStepContent = (step) => {
@@ -157,7 +157,7 @@ class CreateProfile extends Component {
         switch (activeStep) {
             case 0:
                 if ((nickName && contact) === '') {
-                    this.setState(state => ({ 
+                    this.setState(state => ({
                         snackOpen: true,
                     }));
                 }
@@ -170,7 +170,7 @@ class CreateProfile extends Component {
 
             case 1:
                 if (avatarURL.length !== 3) {
-                    this.setState(state => ({ 
+                    this.setState(state => ({
                         snackOpen: true,
                     }));
                 }
@@ -195,17 +195,17 @@ class CreateProfile extends Component {
                 break;
 
             case 3:
-            if (coords) {
-                this.setState(state => ({
-                    activeStep: state.activeStep + 1,
-                }));
-            }
-            else {
-                this.setState(state => ({
-                    snackOpen: true,
-                }));
-            }
-            break; 
+                if (coords) {
+                    this.setState(state => ({
+                        activeStep: state.activeStep + 1,
+                    }));
+                }
+                else {
+                    this.setState(state => ({
+                        snackOpen: true,
+                    }));
+                }
+                break;
 
             default:
                 return 'Unknown step';
@@ -216,13 +216,58 @@ class CreateProfile extends Component {
     };
 
     handleBack = () => {
-        this.setState(state => ({
-            activeStep: state.activeStep - 1,
-        }));
+        const { activeStep } = this.state;
+
+        switch (activeStep) {
+
+            case 1:
+                this.setState(state => ({
+                    nickName:'',
+                    contact: '',
+                    avatarURL: [],
+            
+                    activeStep: state.activeStep - 1,
+                }));
+                break;
+
+            case 2:
+                this.setState(state => ({
+                    avatarURL: [],
+                    beverages: [],
+                    mins: [],
+
+                    activeStep: state.activeStep - 1,
+                }));
+                break;
+
+            case 3:
+                this.setState(state => ({
+                    beverages: [],
+                    mins: [],
+                    coords: null,
+
+                    activeStep: state.activeStep - 1,
+                }));
+                break;
+
+            default:
+                return 'Unknown step';
+        }
+        // this.setState(state => ({
+        //     activeStep: state.activeStep - 1,
+        // }));
     };
 
     handleReset = () => {
+
         this.setState({
+            nickName: '',
+            contact: '',
+            avatarURL: [],
+            beverages: [],
+            mins: [],
+            coords: null,
+            
             activeStep: 0,
         });
     };
@@ -231,6 +276,33 @@ class CreateProfile extends Component {
         this.setState({ snackOpen: false });
     };
 
+    createDatabase(){
+        const { nickName, contact, avatarURL, beverages, mins, coords } = this.state;
+
+       const profileObj = {
+            nickName,
+            contact,
+            avatarURL,
+            beverages,
+            mins,
+            coords,
+        }
+
+        const userAvail = JSON.parse(localStorage.getItem("user"));
+
+        console.log(profileObj)
+
+        firebase.database().ref("/").child("profiles/" + userAvail.uid).set(profileObj)
+                .then(() => {
+                    localStorage.setItem("userProfile", JSON.stringify(profileObj));
+                    console.log("Profile created in DataBase.");
+                    this.props.history.push('/dashboard')
+                })
+                .catch(function (error) {
+                    console.log('Error:', error.message)
+                });
+
+    }
 
     render() {
         const { classes } = this.props;
@@ -254,7 +326,7 @@ class CreateProfile extends Component {
                     }}
                     message={<span id="message-id">
                         <InfoIcon className={classes.iconVariant} />
-                        Please fill all the fields</span>}
+                        Please give necessary details </span>}
                     action={[
                         <IconButton
                             key="close"
@@ -270,18 +342,8 @@ class CreateProfile extends Component {
 
                 <div className={classes.root}>
 
-                    {/* <Snackbar
-                    open={this.state.open}
-                    onClose={this.handleClose}
-                    TransitionComponent={Fade}
-                    ContentProps={{
-                        'aria-describedby': 'message-id',
-                    }}
-                    message={<span id="message-id">I love snacks</span>}
-                /> */}
-
-
-
+<Typography variant="title" >Create Profile</Typography>
+        
                     <Stepper activeStep={activeStep} orientation="vertical" style={{ textAlign: 'left' }}>
                         {steps.map((label, index) => {
                             return (
@@ -316,7 +378,7 @@ class CreateProfile extends Component {
                     {activeStep === steps.length && (
                         <Paper square elevation={0} className={classes.resetContainer}>
                             <Typography>All steps completed - you&quot;re finished now</Typography>
-                            <Button variant='outlined' size="large" color='secondary' className={classes.button}>
+                            <Button onClick={() => {this.createDatabase()}} variant='outlined' size="large" color='secondary' className={classes.button}>
                                 Create Profile
                   </Button>
                             <br />

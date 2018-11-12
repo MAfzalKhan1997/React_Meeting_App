@@ -28,7 +28,7 @@ const styles = theme => ({
     //     backgroundColor: theme.palette.background.default,
     // },
     img: {
-        height: 250,
+        height: 280,
         maxWidth: 300,
         overflow: 'hidden',
         display: 'block',
@@ -42,8 +42,8 @@ const styles = theme => ({
 const dummyImages = [
 
     'https://bootdey.com/img/Content/avatar/avatar7.png',
-    'https://bootdey.com/img/Content/avatar/avatar7.png',
-    'https://bootdey.com/img/Content/avatar/avatar7.png'
+    'http://taxvision.fr/images/avatar3.png',
+    'https://ipsforo.com/data/avatars/o/0/1.jpg?1514820653'
 ]
 
 
@@ -111,8 +111,8 @@ class Step2 extends Component {
         return (
             <div className={classes.root}>
                 <Paper square elevation={1}>
-                    <Button variant='contained' color='secondary' style={{ width: '100%', height: '50px', borderRadius: '0px' }} >
-                        <label>
+                    <Button variant='contained' color='secondary' style={{ width: '100%', height: '40px', borderRadius: '0px', padding:'0px', margin: '0px' }} >
+                        <label style={{width:'100%'}}>
                             click here to select your pic {activeStep + 1}
                             <FileUploader
                                 hidden
@@ -136,6 +136,7 @@ class Step2 extends Component {
                         position="static"
                         activeStep={activeStep}
                         className={classes.mobileStepper}
+                        style={{height:'40px'}}
                         nextButton={
                             <Button size="small" onClick={this.handleNext} disabled={isUploading ? true : activeStep === maxSteps - 1}>
                                 Next

@@ -34,7 +34,7 @@ class App extends Component {
             !userAvail ?
               <Login {...this.props} />
               : 
-              this.props.history.push('/profile')
+              this.props.history.push('/dashboard')
           }
         </div>
       </center>
