@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 // import './Dashboard.css';
 
-// import DashComp from '../../Components/DashComp/DashComp'
-// import AuthState from '../../Helper/AuthState'
-  
+import Typography from '@material-ui/core/Typography';
 
 //   static getDerivedStateFromProps(props) {
 
@@ -26,20 +24,27 @@ class DashMeetings extends Component {
         super()
 
         this.state = {
-            meetings:'You haven’t done any meeting yet!'
+            meetings: null,
         }
     }
- 
+
     render() {
-  
+
         const { meetings } = this.state;
 
         return (
-            <div>
-
-             </div>
+            <div style={{height:'100%'}}>
+                {
+                    meetings ?
+                        'meetings available'
+                        :
+                        <Typography variant="subtitle2" >
+                            You haven’t done any meeting yet!
+                        </Typography>
+                } 
+            </div>
         );
     }
 }
- 
+
 export default DashMeetings;
