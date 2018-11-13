@@ -30,7 +30,8 @@ class DashAvailable extends Component {
         super()
 
         this.state = {
-            data: ['Alexandre', 'Thomas', 'Lucien'],
+            filteredUsers: [],
+            // data: ['Alexandre', 'Thomas', 'Lucien'],
         }
     }
 
@@ -60,7 +61,7 @@ class DashAvailable extends Component {
                 })
 
                 this.setState({ filteredUsers });
-                console.log('filetered', this.state.filteredUsers);
+                console.log('filetered', filteredUsers);
 
             }
 
@@ -88,18 +89,17 @@ class DashAvailable extends Component {
     }
 
     render() {
-        const { data } = this.state;
+        const { filteredUsers } = this.state;
         // console.log('render', data)
         return (
             <div className='cardsDiv'>
             <Cards onEnd={() => this.action('end')} className='master-root'  size={[320,420]} cardSize={[300,300]} >
-                {data.map((item, index) =>
-                    <Card
-                        // style={{ backgroundColor: 'grey' }}
+                {filteredUsers.map((item, index) =>
+                    <Card 
                         key={item}
                         onSwipeLeft={() => console.log('removed', index)}
                         onSwipeRight={() => this.selectUser(index)}>
-                        <UserCard></UserCard>
+                        <UserCard userObj={item}></UserCard>
                     </Card>
                 )}
             </Cards>
