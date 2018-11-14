@@ -4,7 +4,7 @@ import AppBar from '../Components/AppBar/AppBar';
 import App from '../Screens/App/App';
 import Dashboard from '../Screens/Dashboard/Dashboard';
 import Profile from '../Screens/Profile/Profile';
-
+import Users from '../Screens/Users/Users';
 
 const Routes = () => {
 
@@ -15,9 +15,9 @@ const Routes = () => {
 
                 <Route path='/' component={AppBar} />
                 <Route exact path='/' component={App} />
-                <Route path='/dashboard' component={Dashboard} ></Route>
+                <Route path='/dashboard' component={Dashboard} />
                 <Route path="/profile" component={Profile} />
-
+                <Route path="/users" component={Users} />
             </div>
         </Router >
 

@@ -18,8 +18,7 @@ import Button from '@material-ui/core/Button';
 // import IconButton from '@material-ui/core/IconButton';
 // import TextField from '@material-ui/core/TextField';
 import AddIcon from '@material-ui/icons/Add';
-import Snackbar from '@material-ui/core/Snackbar';
-import Fade from '@material-ui/core/Fade';
+
 
 function TabContainer({ children, dir }) {
     // console.log(children._self.state.value)
@@ -80,6 +79,11 @@ class DashComp extends Component {
         this.setState({ value: index });
     };
 
+    goToUsers(){
+
+        this.props.history.push('/users')
+    }
+
     render() {
         const { classes, theme } = this.props;
 
@@ -92,6 +96,7 @@ class DashComp extends Component {
                         indicatorColor="primary"
                         textColor="primary"
                         fullWidth
+                        scrollable
                     >
                         <Tab label="Meetings" />
                         <Tab label="Requests" />
@@ -105,36 +110,18 @@ class DashComp extends Component {
                 >
                     <TabContainer dir={theme.direction}><DashMeetings /></TabContainer>
                     <TabContainer dir={theme.direction}><DashRequests /></TabContainer>
-                    <TabContainer dir={theme.direction}><DashAvailable /></TabContainer>
+                    <TabContainer dir={theme.direction}><DashAvailable {...this.props} /></TabContainer>
                 </SwipeableViews>
-                {
-                    this.state.value !== 2 ?
-                        <Button variant="fab" color="primary" onClick={() => this.setState({ value: 2, openSnack: true })}
-                            style={{
-                                position: 'fixed',
-                                bottom: '20px',
-                                right: '20px',
-                            }} >
-                            <AddIcon />
-                        </Button>
-                        :
-                        null
-                }
 
-                <Snackbar
-                    open={this.state.openSnack}
-                    onClose={() => this.setState({ openSnack: false })}
-                    TransitionComponent={Fade}
-                    autoHideDuration={6000}
-                    anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'left',
-                      }}
-                    ContentProps={{
-                        'aria-describedby': 'message-id',
-                    }}
-                    message={<span id="message-id">Choose a Person you want to Meet with</span>}
-                />
+                <Button variant="fab" color="primary" onClick={() => this.goToUsers()}
+                    style={{
+                        position: 'fixed',
+                        bottom: '20px',
+                        right: '20px',
+                    }} >
+                    <AddIcon />
+                </Button>
+
             </div>
         );
     }

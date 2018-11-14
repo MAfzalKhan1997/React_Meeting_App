@@ -15,81 +15,93 @@ import CloseIcon from '@material-ui/icons/Close';
 import CheckIcon from '@material-ui/icons/Check';
 
 const styles = theme => ({
-  paper: {
-    // maxWidth: 300,
-    // flexGrow: 1,
-    // width: '90%'
-    // margin:'0px'
-  }, 
+    // paper: {
+        // maxWidth: 300,
+        // flexGrow: 1,
+        // width: '90%'
+        // margin:'0px'
+    // },
 });
- 
+
 class UserCard extends React.Component {
-    
-    constructor(){
+
+    constructor() {
         super()
-        this.state={
+        this.state = {
 
         }
     }
 
 
-  render() {
-      const { classes, userObj } = this.props;
+    render() { 
+        const { userObj, removeUser, dialogOpen } = this.props;
+        const { pathname } = this.props.location;
 
-    return (
-        <Paper className="paperDiv">
-      <Carousel
-      autoplay={true}
-      wrapAround={true}
-      autoplayInterval={2000}
-      pauseOnHover={true}
-      transitionMode='fade' 
-      >
-        
-{        userObj.avatarURL.map((value, index) => (
-            <img
-              src={value}
-            //   alt={`Slide ${index + 1}`}
-              key={value} 
-              style={{ height:300 }}
-            />
-          ))}
-      </Carousel>
-      <Grid container
-            direction="row"
-            justify="center"
-            alignItems="center">
+        return (
+            <Paper className='paperDiv'>
+                <Carousel
+                    autoplay={true}
+                    wrapAround={true}
+                    autoplayInterval={2000}
+                    pauseOnHover={true}
+                    transitionMode='fade'
+                >
 
-            <Grid item xs={2}>
-              <IconButton style={{color:'red'}}>
-                <CloseIcon />
-              </IconButton>
-            </Grid>
-            <Grid item xs={8}> 
-                <Grid direction="row" justify="center" alignItems="center">
-                  <Typography variant="caption" >
-                    <b>Afzal</b>
-                  </Typography>
+                    {userObj.avatarURL.map((value, index) => (
+                        <img
+                            src={value}
+                            alt={value}
+                            // key={value}
+                            style={{ height: 300 }}
+                        />
+                    ))}
+                </Carousel>
+
+                <Grid container
+                    direction="row"
+                    justify="center"
+                    alignItems="center"
+                    style={{ height: '55px' }}
+                >
+                    {
+                        pathname === "/users" ?
+                            <Grid item xs={2}>
+                                <IconButton style={{ color: 'red' }} onClick={() => removeUser(0)}>
+                                    <CloseIcon />
+                                </IconButton>
+                            </Grid>
+                            :
+                            null
+                    }
+                    <Grid item xs={8}>
+                        <Grid>
+                            <Typography variant="subheading" >
+                                {userObj.displayName}
+                            </Typography>
+                        </Grid>
+                        <Grid>
+                            <Typography variant="caption" >{userObj.nickName}</Typography>
+                        </Grid>
+                    </Grid>
+                    {
+                        pathname === "/users" ?
+                            <Grid item xs={2}>
+                                <IconButton style={{ color: 'green' }} onClick={() => dialogOpen(userObj)}>
+                                    <CheckIcon />
+                                </IconButton>
+                            </Grid>
+                            :
+                            null
+                    }
                 </Grid>
-                <Grid direction="row" justify="center" alignItems="center">
-                  <Typography variant="caption" >{userObj.nickName}</Typography>
-                </Grid> 
-            </Grid>
-            <Grid item xs={2}>
-              <IconButton  style={{color:'green'}} onClick={() => alert()}>
-                <CheckIcon />
-              </IconButton>
-            </Grid>
-
-          </Grid>
-      </Paper>
-    );
-  }
+            </Paper>
+        );
+    }
 }
 
 UserCard.propTypes = {
-  classes: PropTypes.object.isRequired,
-//   theme: PropTypes.object.isRequired,
+    classes: PropTypes.object.isRequired,
+    //   theme: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles)(UserCard);

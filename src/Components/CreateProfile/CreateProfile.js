@@ -222,10 +222,10 @@ class CreateProfile extends Component {
 
             case 1:
                 this.setState(state => ({
-                    nickName:'',
+                    nickName: '',
                     contact: '',
                     avatarURL: [],
-            
+
                     activeStep: state.activeStep - 1,
                 }));
                 break;
@@ -267,7 +267,7 @@ class CreateProfile extends Component {
             beverages: [],
             mins: [],
             coords: null,
-            
+
             activeStep: 0,
         });
     };
@@ -276,10 +276,16 @@ class CreateProfile extends Component {
         this.setState({ snackOpen: false });
     };
 
-    createDatabase(){
+    createDatabase() {
         const { nickName, contact, avatarURL, beverages, mins, coords } = this.state;
 
-       const profileObj = {
+        const userAvail = JSON.parse(localStorage.getItem("user"));
+
+        const profileObj = {
+
+            displayName: userAvail.displayName,
+            email: userAvail.email,
+            uid: userAvail.uid,
             nickName,
             contact,
             avatarURL,
@@ -288,19 +294,17 @@ class CreateProfile extends Component {
             coords,
         }
 
-        const userAvail = JSON.parse(localStorage.getItem("user"));
-
         console.log(profileObj)
 
         firebase.database().ref("/").child("profiles/" + userAvail.uid).set(profileObj)
-                .then(() => {
-                    localStorage.setItem("userProfile", JSON.stringify(profileObj));
-                    console.log("Profile created in DataBase.");
-                    this.props.history.push('/dashboard')
-                })
-                .catch(function (error) {
-                    console.log('Error:', error.message)
-                });
+            .then(() => {
+                localStorage.setItem("userProfile", JSON.stringify(profileObj));
+                console.log("Profile created in DataBase.");
+                this.props.history.push('/dashboard')
+            })
+            .catch(function (error) {
+                console.log('Error:', error.message)
+            });
 
     }
 
@@ -342,8 +346,8 @@ class CreateProfile extends Component {
 
                 <div className={classes.root}>
 
-<Typography variant="title" >Create Profile</Typography>
-        
+                    <Typography variant="title" >Create Profile</Typography>
+
                     <Stepper activeStep={activeStep} orientation="vertical" style={{ textAlign: 'left' }}>
                         {steps.map((label, index) => {
                             return (
@@ -378,7 +382,7 @@ class CreateProfile extends Component {
                     {activeStep === steps.length && (
                         <Paper square elevation={0} className={classes.resetContainer}>
                             <Typography>All steps completed - you&quot;re finished now</Typography>
-                            <Button onClick={() => {this.createDatabase()}} variant='outlined' size="large" color='secondary' className={classes.button}>
+                            <Button onClick={() => { this.createDatabase() }} variant='outlined' size="large" color='secondary' className={classes.button}>
                                 Create Profile
                   </Button>
                             <br />

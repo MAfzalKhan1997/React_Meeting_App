@@ -52,7 +52,7 @@ class Dashboard extends Component {
             userAvail ?
               userProfile ?
                 // 'Dashboard'
-                <DashComp></DashComp>
+                <DashComp {...this.props}></DashComp>
                 :
                 this.props.history.push('/profile')
               // <CreateProfile></CreateProfile>
