@@ -73,6 +73,7 @@ class DashAvailable extends Component {
 
         this.removeUser = this.removeUser.bind(this);
         this.dialogOpen = this.dialogOpen.bind(this);
+        // this.selectUser = this.selectUser.bind(this);
     }
 
     componentWillMount() {
@@ -125,8 +126,11 @@ class DashAvailable extends Component {
         console.log('filtered', filteredUsers)
     }
 
-    selectUser(alert) {
-        // console.log('select', alert)
+    selectUser(obj) {
+        this.setState({ openDialog: false })
+        console.log('selected user', obj)
+
+        this.props.history.push('/users/location', {obj})
     }
 
     dialogOpen(obj) { 
@@ -188,21 +192,22 @@ class DashAvailable extends Component {
                                     className={classes.avatar}
                                 />
                             </div>
+ 
                             <Typography variant="caption" id="modal-title" style={{ fontSize: '18px' }}>
                                 Nice Choice!
-                    </Typography>
-                            <br /><br />
+                            </Typography>
+                                <br />
                             <Typography variant="subtitle1" id="modal-title">
                                 Do you want to meet <span style={{ fontSize: '25px' }}>{dialogObj.displayName}</span> ?
-                    </Typography>
-                            <br />
+                            </Typography>
+                                <br />
                             <Button variant="outlined" onClick={this.dialogClose} color="secondary">
                                 cancel
-                    </Button> &nbsp; &nbsp;
-                    <Button variant="contained" onClick={this.dialogClose} color="primary" autoFocus>
+                            </Button> &nbsp; &nbsp;
+                            <Button variant="contained" onClick={() => this.selectUser(dialogObj)} color="primary" autoFocus>
                                 &nbsp;&nbsp;&nbsp; yes &nbsp;&nbsp;&nbsp;
-                    </Button>
-                            {/* <DashAvailableUsers /> */}
+                            </Button>
+ 
                         </div>
                     </center>
                 </Modal>

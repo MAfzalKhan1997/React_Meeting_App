@@ -1,0 +1,7 @@
+.locationsDiv{
+    width: 90% !important;   
+}
+        
+@media (min-width:768px) { .locationsDiv{ 
+            width: 70% !important;
+}}
