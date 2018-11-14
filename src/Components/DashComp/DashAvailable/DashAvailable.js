@@ -13,6 +13,7 @@ import Typography from '@material-ui/core/Typography';
 import Modal from '@material-ui/core/Modal';
 import Button from '@material-ui/core/Button';
 import Avatar from '@material-ui/core/Avatar';
+
 // static getDerivedStateFromProps(props) {
 
 //   AuthState()
@@ -128,12 +129,15 @@ class DashAvailable extends Component {
         // console.log('select', alert)
     }
 
-    dialogOpen(obj) {
-        console.log(obj)
-        this.setState({
-            openDialog: true,
-            dialogObj: obj,
-        });
+    dialogOpen(obj) { 
+
+        if(this.props.location.pathname === "/users"){
+        
+            this.setState({
+                openDialog: true,
+                dialogObj: obj,
+            });
+        }
     };
 
     dialogClose = () => {
@@ -143,7 +147,7 @@ class DashAvailable extends Component {
     render() {
         const { filteredUsers, dialogObj } = this.state;
         const { classes } = this.props;
-        // console.log('render', data)
+        
         return (
             <div className='cardsDiv'>
                 <Cards onEnd={() => this.action('end')} className='master-root' size={[320, 420]} cardSize={[300, 300]} >
@@ -152,7 +156,7 @@ class DashAvailable extends Component {
                             key={item}
                             onSwipeLeft={() => console.log('removed', index)}
                             onSwipeRight={() => this.dialogOpen(item)}>
-                            <UserCard userObj={item} removeUser={this.removeUser} dialogOpen={this.dialogOpen} {...this.props}></UserCard>
+                            <UserCard userObj={item} removeUser={this.removeUser} dialogOpen={this.dialogOpen} {...this.props.location}></UserCard>
                         </Card>
                     )}
                 </Cards>

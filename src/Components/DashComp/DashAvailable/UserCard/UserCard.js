@@ -10,16 +10,15 @@ import Grid from '@material-ui/core/Grid';
 
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-// import Grid from '@material-ui/core/Grid';
 import CloseIcon from '@material-ui/icons/Close';
 import CheckIcon from '@material-ui/icons/Check';
 
 const styles = theme => ({
     // paper: {
-        // maxWidth: 300,
-        // flexGrow: 1,
-        // width: '90%'
-        // margin:'0px'
+    // maxWidth: 300,
+    // flexGrow: 1,
+    // width: '90%'
+    // margin:'0px'
     // },
 });
 
@@ -33,9 +32,10 @@ class UserCard extends React.Component {
     }
 
 
-    render() { 
-        const { userObj, removeUser, dialogOpen } = this.props;
-        const { pathname } = this.props.location;
+    render() {
+        // console.log(this.props)
+        const { userObj, removeUser, dialogOpen, ...location } = this.props;
+        const { pathname } = location; 
 
         return (
             <Paper className='paperDiv'>
@@ -51,7 +51,7 @@ class UserCard extends React.Component {
                         <img
                             src={value}
                             alt={value}
-                            // key={value}
+                            key={value}
                             style={{ height: 300 }}
                         />
                     ))}
@@ -100,8 +100,7 @@ class UserCard extends React.Component {
 }
 
 UserCard.propTypes = {
-    classes: PropTypes.object.isRequired,
-    //   theme: PropTypes.object.isRequired,
+    classes: PropTypes.object.isRequired, 
 };
 
 export default withStyles(styles)(UserCard);
