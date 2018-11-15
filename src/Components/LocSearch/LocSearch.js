@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './LocSearch.css';
+import GetDirection from './GetDirection/GetDirection';
 import firebase from '../../Config/firebase';
 
 import PropTypes from 'prop-types';
@@ -9,11 +10,21 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 // import Avatar from '@material-ui/core/Avatar';
 import LocationIcon from '@material-ui/icons/LocationOnOutlined';
+import DirectionIcon from '@material-ui/icons/DirectionsOutlined';
+import CheckIcon from '@material-ui/icons/CheckOutlined';
 // import WorkIcon from '@material-ui/icons/Work';
 // import BeachAccessIcon from '@material-ui/icons/BeachAccess';
 import Divider from '@material-ui/core/Divider';
 import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
 
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import CloseIcon from '@material-ui/icons/Close';
+import Slide from '@material-ui/core/Slide';
 
 const styles = theme => ({
     // root: {
@@ -22,7 +33,17 @@ const styles = theme => ({
     //   backgroundColor: theme.palette.background.paper,
     // backgroundColor: 'yellow',
     // },
+    appBar: {
+        position: 'relative',
+    },
+    flex: {
+        flex: 1,
+    },
 });
+
+function Transition(props) {
+    return <Slide direction="up" {...props} />;
+}
 
 
 class LocSearch extends Component {
@@ -34,8 +55,14 @@ class LocSearch extends Component {
             searchLocations: [],
             nearLocations: [],
             search: null,
+            showMap: false,
+          
         }
     }
+
+    handleClose(){
+        this.setState({ showMap: false });
+    };
 
     //   static getDerivedStateFromProps(props) {
 
@@ -62,11 +89,11 @@ class LocSearch extends Component {
         })
     }
 
-   async searchLoc(e) {
+    async searchLoc(e) {
         // const { searchQuery } = this.state
         let search = e.target.value
 
-       await this.setState({
+        await this.setState({
             search,
         })
 
@@ -104,10 +131,24 @@ class LocSearch extends Component {
             })
     }
 
+    showMap(obj) {
+       let lat = obj.location.lat;
+       let lng = obj.location.lng;
+
+        this.setState({
+            showMap: true,
+            locName: obj.name,
+            destination: {
+                latitude: lat,
+                longitude: lng,
+            }
+        })
+    }
+
 
     render() {
-        // const { classes } = this.props;
-        const { searchLocations, nearLocations, search } = this.state;
+        const { classes } = this.props;
+        const { coords, destination, searchLocations, nearLocations, search, locName } = this.state;
 
         return (
             <center>
@@ -115,27 +156,34 @@ class LocSearch extends Component {
 
                     <TextField
                         //   placeholder="e.g:Attend Meeting"
+                        //   value={this.state.text}
                         label="Search here..."
                         helperText="Location"
-                        //   inputProps= {{maxLength:17}}
                         fullWidth={true}
                         margin={'normal'}
-                        // required={true} "show * means required"
-                        // error={true} "shows like there is error"
-                        // multiline={true} "behaves like textarea"
                         onChange={(e) => this.searchLoc(e)}
-                    //   value={this.state.text}
                     />
 
-
+                    <Typography variant="body2" style={{ paddingTop: 10 }}>
+                        Nearby Locations
+                    </Typography>
                     <List style={{ marginLeft: '-25px' }}>
 
                         {search && searchLocations.map((value, index) => {
 
-                            return <div>
+                            return <div key={index}>
                                 <ListItem>
                                     <LocationIcon />
                                     <ListItemText primary={value.name} secondary={value.location.address} />
+
+                                    <IconButton style={{ margin: '-10px' }} onClick={() => this.showMap(value)}>
+                                        <DirectionIcon />
+                                    </IconButton>
+
+                                    <IconButton style={{ marginRight: '-25px' }}>
+                                        <CheckIcon />
+                                    </IconButton>
+
                                 </ListItem>
 
                                 <Divider inset component="li" />
@@ -144,10 +192,19 @@ class LocSearch extends Component {
 
                         {!search && nearLocations.map((value, index) => {
 
-                            return <div>
+                            return <div key={index}>
                                 <ListItem>
                                     <LocationIcon />
                                     <ListItemText primary={value.venue.name} secondary={value.venue.location.address} />
+
+                                    <IconButton style={{ margin: '-10px' }} onClick={() => this.showMap(value.venue)}>
+                                        <DirectionIcon />
+                                    </IconButton>
+
+                                    <IconButton style={{ marginRight: '-25px' }}>
+                                        <CheckIcon />
+                                    </IconButton>
+
                                 </ListItem>
 
                                 <Divider inset component="li" />
@@ -155,12 +212,40 @@ class LocSearch extends Component {
                         })}
 
                     </List>
+  
+                    <div>
+   
+                        <Dialog
+                            fullScreen
+                            open={this.state.showMap}
+                            onClose={this.handleClose}
+                            TransitionComponent={Transition}
+                        >
+                            <AppBar className={classes.appBar}>
+                                <Toolbar>
+                                    <IconButton style={{marginLeft: '-15px'}} color="inherit" onClick={() => this.handleClose()} aria-label="Close">
+                                        <CloseIcon />
+                                    </IconButton>
+                                    <Typography variant="h6" color="inherit" className={classes.flex}>
+                                        {locName}
+                                    </Typography>
+                                    <Button size="small" color="inherit" onClick={() => this.refs.getDirection.getDirections()}>
+                                        Get Directions
+                                    </Button>
+                                </Toolbar>
+                            </AppBar>
+
+                            <GetDirection ref="getDirection" coords={coords} destination={destination} />
+
+                        </Dialog>
+                    </div>
 
                 </div>
             </center>
         );
     }
 }
+
 
 LocSearch.propTypes = {
     classes: PropTypes.object.isRequired,
