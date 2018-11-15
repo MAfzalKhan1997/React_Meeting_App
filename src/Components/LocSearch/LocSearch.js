@@ -3,6 +3,10 @@ import './LocSearch.css';
 import GetDirection from './GetDirection/GetDirection';
 import firebase from '../../Config/firebase';
 
+import DateFnsUtils from '@date-io/date-fns';
+import { MuiPickersUtilsProvider } from 'material-ui-pickers';
+import { DateTimePicker } from 'material-ui-pickers';
+
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
@@ -12,8 +16,6 @@ import ListItemText from '@material-ui/core/ListItemText';
 import LocationIcon from '@material-ui/icons/LocationOnOutlined';
 import DirectionIcon from '@material-ui/icons/DirectionsOutlined';
 import CheckIcon from '@material-ui/icons/CheckOutlined';
-// import WorkIcon from '@material-ui/icons/Work';
-// import BeachAccessIcon from '@material-ui/icons/BeachAccess';
 import Divider from '@material-ui/core/Divider';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
@@ -25,6 +27,16 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import CloseIcon from '@material-ui/icons/Close';
 import Slide from '@material-ui/core/Slide';
+
+import Snackbar from '@material-ui/core/Snackbar';
+import Fade from '@material-ui/core/Fade';
+
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+
+
 
 const styles = theme => ({
     // root: {
@@ -56,12 +68,22 @@ class LocSearch extends Component {
             nearLocations: [],
             search: null,
             showMap: false,
-          
+            showTime: false,
+
+            selectedDate: new Date(),
         }
     }
 
-    handleClose(){
+    handleMap() {
         this.setState({ showMap: false });
+    };
+
+    handleTime() {
+        this.setState({ showTime: false });
+    };
+
+    handleDateChange = date => {
+        this.setState({ selectedDate: date });
     };
 
     //   static getDerivedStateFromProps(props) {
@@ -86,6 +108,12 @@ class LocSearch extends Component {
             console.log('my Profiel', data.val());
 
             this.setState({ coords: data.val().coords }, () => this.getLoc())
+        })
+    }
+
+    componentDidMount() {
+        this.setState({
+            openSnack: true,
         })
     }
 
@@ -132,8 +160,8 @@ class LocSearch extends Component {
     }
 
     showMap(obj) {
-       let lat = obj.location.lat;
-       let lng = obj.location.lng;
+        let lat = obj.location.lat;
+        let lng = obj.location.lng;
 
         this.setState({
             showMap: true,
@@ -180,7 +208,7 @@ class LocSearch extends Component {
                                         <DirectionIcon />
                                     </IconButton>
 
-                                    <IconButton style={{ marginRight: '-25px' }}>
+                                    <IconButton style={{ marginRight: '-25px' }} onClick={() => this.setState({ showTime: true })}>
                                         <CheckIcon />
                                     </IconButton>
 
@@ -201,7 +229,7 @@ class LocSearch extends Component {
                                         <DirectionIcon />
                                     </IconButton>
 
-                                    <IconButton style={{ marginRight: '-25px' }}>
+                                    <IconButton style={{ marginRight: '-25px' }} onClick={() => this.setState({ showTime: true })}>
                                         <CheckIcon />
                                     </IconButton>
 
@@ -212,18 +240,18 @@ class LocSearch extends Component {
                         })}
 
                     </List>
-  
+
                     <div>
-   
+
                         <Dialog
                             fullScreen
                             open={this.state.showMap}
-                            onClose={this.handleClose}
+                            onClose={() => this.handleMap()}
                             TransitionComponent={Transition}
                         >
                             <AppBar className={classes.appBar}>
                                 <Toolbar>
-                                    <IconButton style={{marginLeft: '-15px'}} color="inherit" onClick={() => this.handleClose()} aria-label="Close">
+                                    <IconButton style={{ marginLeft: '-15px' }} color="inherit" onClick={() => this.handleMap()} aria-label="Close">
                                         <CloseIcon />
                                     </IconButton>
                                     <Typography variant="h6" color="inherit" className={classes.flex}>
@@ -238,6 +266,50 @@ class LocSearch extends Component {
                             <GetDirection ref="getDirection" coords={coords} destination={destination} />
 
                         </Dialog>
+
+                        <Dialog
+                            open={this.state.showTime}
+                            onClose={() => this.handleTime()}
+                            aria-labelledby="alert-dialog-title"
+                            aria-describedby="alert-dialog-description"
+                        >
+                            {/* <center> */}
+                            <DialogTitle id="alert-dialog-title">{"Set Date/Time"}</DialogTitle>
+                            
+                            <DialogContent>
+                                <MuiPickersUtilsProvider utils={DateFnsUtils}>
+
+                                    <DateTimePicker value={this.state.selectedDate} onChange={this.handleDateChange} />
+
+                                </MuiPickersUtilsProvider>
+                            </DialogContent>
+
+                            <DialogActions>
+                                <Button onClick={this.handleClose} color="primary" autoFocus>
+                                    Cancel
+                                </Button>
+                                <Button onClick={this.handleClose} color="primary" autoFocus>
+                                    Send Request
+                                </Button>
+                            </DialogActions>
+                            {/* </center> */}
+                        </Dialog>
+
+                        <Snackbar
+                            open={this.state.openSnack}
+                            onClose={() => this.setState({ openSnack: false })}
+                            TransitionComponent={Fade}
+                            autoHideDuration={4000}
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'left',
+                            }}
+                            ContentProps={{
+                                'aria-describedby': 'message-id',
+                            }}
+                            message={<span id="message-id">Select a Location where you want to Meet</span>}
+                        />
+
                     </div>
 
                 </div>
