@@ -130,7 +130,7 @@ class DashAvailable extends Component {
         this.setState({ openDialog: false })
         console.log('selected user', obj)
 
-        this.props.history.push('/users/location', {obj})
+        this.props.history.push('/users/location', {userProfile: obj} )
     }
 
     dialogOpen(obj) { 

@@ -12,7 +12,7 @@ import { withStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-// import Avatar from '@material-ui/core/Avatar';
+import Avatar from '@material-ui/core/Avatar';
 import LocationIcon from '@material-ui/icons/LocationOnOutlined';
 import DirectionIcon from '@material-ui/icons/DirectionsOutlined';
 import CheckIcon from '@material-ui/icons/CheckOutlined';
@@ -33,10 +33,10 @@ import Fade from '@material-ui/core/Fade';
 
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
+// import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-
+import { Icon, InputAdornment } from '@material-ui/core';
 
 const styles = theme => ({
     // root: {
@@ -50,6 +50,12 @@ const styles = theme => ({
     },
     flex: {
         flex: 1,
+    },
+    bigAvatar: {
+        boxShadow: '0 0 40px rgb(155, 0, 72)',
+        margin: -10,
+        width: 90,
+        height: 90,
     },
 });
 
@@ -68,9 +74,12 @@ class LocSearch extends Component {
             nearLocations: [],
             search: null,
             showMap: false,
-            showTime: false,
+            showReqDialog: false,
 
             selectedDate: new Date(),
+
+            myProfile: { avatarURL: [], },
+            userProfile: { avatarURL: [], },
         }
     }
 
@@ -78,9 +87,10 @@ class LocSearch extends Component {
         this.setState({ showMap: false });
     };
 
-    handleTime() {
-        this.setState({ showTime: false });
+    handleReqDialog() {
+        this.setState({ showReqDialog: false, selectedDate: new Date(), });
     };
+
 
     handleDateChange = date => {
         this.setState({ selectedDate: date });
@@ -107,15 +117,19 @@ class LocSearch extends Component {
 
             console.log('my Profiel', data.val());
 
-            this.setState({ coords: data.val().coords }, () => this.getLoc())
+            this.setState({ myProfile: data.val() }, () => this.getLoc())
         })
     }
 
     componentDidMount() {
+        const { userProfile } = this.props.location.state;
+
         this.setState({
             openSnack: true,
+            userProfile,
         })
     }
+
 
     async searchLoc(e) {
         // const { searchQuery } = this.state
@@ -142,7 +156,7 @@ class LocSearch extends Component {
     }
 
     getLoc() {
-        const { latitude, longitude } = this.state.coords
+        const { latitude, longitude } = this.state.myProfile.coords;
         // console.log("lat,long", latitude, longitude)
 
         fetch(`https://api.foursquare.com/v2/venues/explore?client_id=1MVO3SD3541GVNH2NO42OXQWNLN502CKOL3GEZR3CT1R3UAI&client_secret=GW511GOZVZYRQFQWW0H5SRKODAX1Y2MHYWVUUMCW004OVGFS&v=20180323&ll=${latitude},${longitude}&radius=5000&limit=5&sortByDistance=1`)
@@ -175,9 +189,10 @@ class LocSearch extends Component {
 
 
     render() {
-        const { classes } = this.props;
-        const { coords, destination, searchLocations, nearLocations, search, locName } = this.state;
 
+        const { classes } = this.props;
+        const { destination, searchLocations, nearLocations, search, locName, myProfile, userProfile, selectedLoc } = this.state;
+        const {  coords } = this.state.myProfile;
         return (
             <center>
                 <div className='locationsDiv' >
@@ -197,6 +212,7 @@ class LocSearch extends Component {
                     </Typography>
                     <List style={{ marginLeft: '-25px' }}>
 
+
                         {search && searchLocations.map((value, index) => {
 
                             return <div key={index}>
@@ -208,7 +224,7 @@ class LocSearch extends Component {
                                         <DirectionIcon />
                                     </IconButton>
 
-                                    <IconButton style={{ marginRight: '-25px' }} onClick={() => this.setState({ showTime: true })}>
+                                    <IconButton style={{ marginRight: '-25px' }} onClick={() => this.setState({ showReqDialog: true, selectedLoc: value.name })}>
                                         <CheckIcon />
                                     </IconButton>
 
@@ -217,6 +233,7 @@ class LocSearch extends Component {
                                 <Divider inset component="li" />
                             </div>
                         })}
+
 
                         {!search && nearLocations.map((value, index) => {
 
@@ -229,7 +246,7 @@ class LocSearch extends Component {
                                         <DirectionIcon />
                                     </IconButton>
 
-                                    <IconButton style={{ marginRight: '-25px' }} onClick={() => this.setState({ showTime: true })}>
+                                    <IconButton style={{ marginRight: '-25px' }} onClick={() => this.setState({ showReqDialog: true, selectedLoc: value.venue.name })}>
                                         <CheckIcon />
                                     </IconButton>
 
@@ -241,8 +258,8 @@ class LocSearch extends Component {
 
                     </List>
 
-                    <div>
 
+                    <div>
                         <Dialog
                             fullScreen
                             open={this.state.showMap}
@@ -264,32 +281,92 @@ class LocSearch extends Component {
                             </AppBar>
 
                             <GetDirection ref="getDirection" coords={coords} destination={destination} />
-
                         </Dialog>
 
+
                         <Dialog
-                            open={this.state.showTime}
-                            onClose={() => this.handleTime()}
+                            open={this.state.showReqDialog}
+                            onClose={() => this.handleReqDialog()}
                             aria-labelledby="alert-dialog-title"
                             aria-describedby="alert-dialog-description"
                         >
-                            {/* <center> */}
-                            <DialogTitle id="alert-dialog-title">{"Set Date/Time"}</DialogTitle>
-                            
+                            <DialogTitle id="alert-dialog-title">{`Hey ${myProfile.nickName},`}</DialogTitle>
+                            <br />
+                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                <Avatar
+                                    alt={myProfile.displayName}
+                                    src={myProfile.avatarURL[0]}
+                                    className={classes.bigAvatar}
+                                // className='bigAvatar'
+                                />
+                                <Avatar
+                                    alt={userProfile.displayName}
+                                    src={userProfile.avatarURL[0]}
+                                    className={classes.bigAvatar}
+                                // className='bigAvatar'
+                                />
+                            </div>
+                            <br /><br />
+                         
                             <DialogContent>
+
+                                {/* <DialogContentText> */}
+                                {/* </DialogContentText> */}
+
+                                <Typography variant="subtitle1" id="modal-title">
+                                    Do you want to send Request to <b>{userProfile.nickName}</b> ?
+                                </Typography>
+                                <br />
+
                                 <MuiPickersUtilsProvider utils={DateFnsUtils}>
-
-                                    <DateTimePicker value={this.state.selectedDate} onChange={this.handleDateChange} />
-
+                                    <DateTimePicker
+                                        value={this.state.selectedDate}
+                                        onChange={this.handleDateChange}
+                                        animateYearScrolling={true}
+                                        disablePast
+                                        showTodayButton
+                                        helperText="Meeting Date/Time"
+                                        InputProps={{
+                                            endAdornment: (
+                                                <InputAdornment position="end">
+                                                    <IconButton>
+                                                        <Icon>today</Icon>
+                                                    </IconButton>
+                                                </InputAdornment>
+                                            ),
+                                        }}
+                                    />
                                 </MuiPickersUtilsProvider>
+                                <br/>
+                          
+                                <TextField
+                                    // disabled
+                                    id="standard-disabled"
+                                    // label="Disabled"
+                                    helperText="Selected Location"
+                                    value={selectedLoc}
+                                    // className={classes.textField}
+                                    margin="normal"
+                                    InputProps={{
+                                        readOnly: true,
+                                        endAdornment: (
+                                            <InputAdornment position="end">
+                                                <IconButton>
+                                                    <Icon>location_on</Icon>
+                                                </IconButton>
+                                            </InputAdornment>
+                                        ),
+                                      }}
+                                />
+
                             </DialogContent>
 
                             <DialogActions>
-                                <Button onClick={this.handleClose} color="primary" autoFocus>
+                                <Button onClick={() => this.handleReqDialog()} color="primary" >
                                     Cancel
                                 </Button>
-                                <Button onClick={this.handleClose} color="primary" autoFocus>
-                                    Send Request
+                                <Button onClick={this.handleClose} color="primary" autoFocus color='secondary' variant="contained">
+                                    Send
                                 </Button>
                             </DialogActions>
                             {/* </center> */}

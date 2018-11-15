@@ -54,7 +54,7 @@ class Location extends Component {
             userAvail ?
               userProfile ?
                 state ?
-                  <LocSearch></LocSearch>
+                  <LocSearch {...this.props}></LocSearch>
                   :
                   this.props.history.goBack()
                 :

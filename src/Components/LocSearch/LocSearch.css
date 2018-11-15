@@ -5,3 +5,7 @@
 @media (min-width:768px) { .locationsDiv{ 
             width: 70% !important;
 }}
+
+/* .bigAvatar{
+    box-shadow: 0 0 30px rgb(0, 16, 155) !important;
+} */
