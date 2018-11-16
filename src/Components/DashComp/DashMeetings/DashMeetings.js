@@ -16,6 +16,8 @@ import Chip from '@material-ui/core/Chip';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 
+import Avatar from '@material-ui/core/Avatar';
+
 const styles = theme => ({
     root: {
         width: '100%',
@@ -48,6 +50,12 @@ const styles = theme => ({
         '&:hover': {
             textDecoration: 'underline',
         },
+    },
+    bigAvatar: {
+        // boxShadow: '0 0 40px rgb(155, 0, 72)',
+        marginRight: 20,
+        width: 60,
+        height: 60,
     },
 });
 
@@ -105,11 +113,17 @@ class DashMeetings extends Component {
                                 return <ExpansionPanel key={index}>
 
                                     <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                                        <div className={classes.column}>
-                                            <Typography className={classes.heading}>Location</Typography>
+                                        <div>
+                                            <Avatar 
+                                            className={classes.bigAvatar}
+                                            alt={value.displayName}
+                                            src={value.avatarURL}
+                                            />
                                         </div>
-                                        <div className={classes.column}>
-                                            <Typography className={classes.secondaryHeading}>Select trip destination</Typography>
+                                        <div style={{textAlign: 'left',}}>
+                                            <Typography variant="body2">{value.displayName}</Typography>
+                                            <Typography variant="caption">{meetings[0].nickName}</Typography>
+                                            {/* <Typography variant="caption">4.5</Typography> */}
                                         </div>
                                     </ExpansionPanelSummary>
 
