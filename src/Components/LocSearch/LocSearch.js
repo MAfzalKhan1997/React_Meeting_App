@@ -77,6 +77,7 @@ class LocSearch extends Component {
             showReqDialog: false,
 
             selectedDate: new Date(),
+            selectedLoc: '',
 
             myProfile: { avatarURL: [], },
             userProfile: { avatarURL: [], },
@@ -95,20 +96,58 @@ class LocSearch extends Component {
     handleDateChange = date => {
         this.setState({ selectedDate: date });
     };
+ 
 
-    //   static getDerivedStateFromProps(props) {
+    setMeeting() {
+        const { myProfile, userProfile, selectedDate, selectedLoc } = this.state;
 
-    //     AuthState()
-    //     const userAvail = JSON.parse(localStorage.getItem("user"));
-    //     const userProfile = JSON.parse(localStorage.getItem("userProfile"));
+        this.setState({ showReqDialog: false });
 
-    //     // console.log('derived',userAvail,'derived',userProfile)
+        const userObj = {
+            displayName: userProfile.displayName,
+            nickName: userProfile.nickName,
+            avatarURL: userProfile.avatarURL,
+            contact: userProfile.contact,
+            email: userProfile.email,
+            uid: userProfile.uid,
 
-    //     return {
-    //       userAvail,
-    //       userProfile,
-    //     }
-    //   }
+            status: 'PENDING',
+            selectedDate: selectedDate.toLocaleString(),
+            selectedLoc,
+        }
+
+        const myObj = {
+            displayName: myProfile.displayName,
+            nickName: myProfile.nickName,
+            avatarURL: myProfile.avatarURL,
+            contact: myProfile.contact,
+            email: myProfile.email,
+            uid: myProfile.uid,
+
+            status: 'PENDING',
+            selectedDate: selectedDate.toLocaleString(),
+            selectedLoc,
+        }
+
+        firebase.database().ref("/").child(`meetings/${myProfile.uid}/meetings/${userProfile.uid}`).push(userObj)
+            .then((resp) => {
+                const responseKey = resp.key;
+                console.log("Meeting Set.", resp);
+
+                firebase.database().ref("/").child(`meetings/${userProfile.uid}/requests/${myProfile.uid}/${responseKey}`).set(myObj)
+                    .then(() => {
+                        console.log("Req Sent.");
+                        this.props.history.replace('/dashboard')
+                    })
+                    .catch(function (error) {
+                        console.log('Req Error:', error.message)
+                    });
+            })
+            .catch(function (error) {
+                console.log('Meeting Error:', error.message)
+            });
+    }
+
     componentWillMount() {
 
         const userAvail = JSON.parse(localStorage.getItem("user"));
@@ -192,7 +231,7 @@ class LocSearch extends Component {
 
         const { classes } = this.props;
         const { destination, searchLocations, nearLocations, search, locName, myProfile, userProfile, selectedLoc } = this.state;
-        const {  coords } = this.state.myProfile;
+        const { coords } = this.state.myProfile;
         return (
             <center>
                 <div className='locationsDiv' >
@@ -224,7 +263,7 @@ class LocSearch extends Component {
                                         <DirectionIcon />
                                     </IconButton>
 
-                                    <IconButton style={{ marginRight: '-25px' }} onClick={() => this.setState({ showReqDialog: true, selectedLoc: value.name })}>
+                                    <IconButton style={{ marginRight: '-25px' }} onClick={() => this.setState({ showReqDialog: true, selectedLoc: value })}>
                                         <CheckIcon />
                                     </IconButton>
 
@@ -246,7 +285,7 @@ class LocSearch extends Component {
                                         <DirectionIcon />
                                     </IconButton>
 
-                                    <IconButton style={{ marginRight: '-25px' }} onClick={() => this.setState({ showReqDialog: true, selectedLoc: value.venue.name })}>
+                                    <IconButton style={{ marginRight: '-25px' }} onClick={() => this.setState({ showReqDialog: true, selectedLoc: value.venue })}>
                                         <CheckIcon />
                                     </IconButton>
 
@@ -289,6 +328,8 @@ class LocSearch extends Component {
                             onClose={() => this.handleReqDialog()}
                             aria-labelledby="alert-dialog-title"
                             aria-describedby="alert-dialog-description"
+                            // fullWidth
+                            // maxWidth="sm"
                         >
                             <DialogTitle id="alert-dialog-title">{`Hey ${myProfile.nickName},`}</DialogTitle>
                             <br />
@@ -307,14 +348,14 @@ class LocSearch extends Component {
                                 />
                             </div>
                             <br /><br />
-                         
+
                             <DialogContent>
 
                                 {/* <DialogContentText> */}
                                 {/* </DialogContentText> */}
 
                                 <Typography variant="subtitle1" id="modal-title">
-                                    Do you want to send Request to <b>{userProfile.nickName}</b> ?
+                                    Do you want to send Meeting Request to <b>{userProfile.nickName}</b> ?
                                 </Typography>
                                 <br />
 
@@ -337,14 +378,14 @@ class LocSearch extends Component {
                                         }}
                                     />
                                 </MuiPickersUtilsProvider>
-                                <br/>
-                          
+                                <br />
+
                                 <TextField
                                     // disabled
                                     id="standard-disabled"
                                     // label="Disabled"
                                     helperText="Selected Location"
-                                    value={selectedLoc}
+                                    value={selectedLoc.name}
                                     // className={classes.textField}
                                     margin="normal"
                                     InputProps={{
@@ -356,7 +397,7 @@ class LocSearch extends Component {
                                                 </IconButton>
                                             </InputAdornment>
                                         ),
-                                      }}
+                                    }}
                                 />
 
                             </DialogContent>
@@ -365,7 +406,7 @@ class LocSearch extends Component {
                                 <Button onClick={() => this.handleReqDialog()} color="primary" >
                                     Cancel
                                 </Button>
-                                <Button onClick={this.handleClose} color="primary" autoFocus color='secondary' variant="contained">
+                                <Button onClick={() => this.setMeeting()} autoFocus color='secondary' variant="contained">
                                     Send
                                 </Button>
                             </DialogActions>
