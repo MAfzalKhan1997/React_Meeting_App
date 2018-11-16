@@ -89,7 +89,7 @@ class DashAvailable extends Component {
             if (userAvail.uid !== data.val().uid) {
 
                 users.push(data.val());
-                console.log('users profile', users);
+                // console.log('users profile', users);
 
                 let filteredUsers = users.filter((value, index) => {
                     let distance = Geofire.distance([userProfile.coords.latitude, userProfile.coords.longitude], [value.coords.latitude, value.coords.longitude]);
@@ -103,7 +103,7 @@ class DashAvailable extends Component {
                 })
 
                 this.setState({ filteredUsers });
-                console.log('filetered', filteredUsers);
+                // console.log('filetered', filteredUsers);
 
             }
 

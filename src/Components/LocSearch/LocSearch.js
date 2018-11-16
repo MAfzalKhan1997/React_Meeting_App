@@ -96,14 +96,23 @@ class LocSearch extends Component {
     handleDateChange = date => {
         this.setState({ selectedDate: date });
     };
- 
+
 
     setMeeting() {
         const { myProfile, userProfile, selectedDate, selectedLoc } = this.state;
 
         this.setState({ showReqDialog: false });
 
-        const userObj = {
+        let options = {  
+            weekday: 'long',
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        };
+ 
+        const userDetails = {
             displayName: userProfile.displayName,
             nickName: userProfile.nickName,
             avatarURL: userProfile.avatarURL,
@@ -112,11 +121,19 @@ class LocSearch extends Component {
             uid: userProfile.uid,
 
             status: 'PENDING',
-            selectedDate: selectedDate.toLocaleString(),
+            selectedDate: selectedDate.toLocaleString('en-us', options),
             selectedLoc,
         }
 
-        const myObj = {
+        
+        const userObj = {
+            displayName: userProfile.displayName,
+            avatarURL: userProfile.avatarURL[0],
+            contact: userProfile.contact,
+            email: userProfile.email,
+        }
+
+        const myDetails = {
             displayName: myProfile.displayName,
             nickName: myProfile.nickName,
             avatarURL: myProfile.avatarURL,
@@ -125,27 +142,41 @@ class LocSearch extends Component {
             uid: myProfile.uid,
 
             status: 'PENDING',
-            selectedDate: selectedDate.toLocaleString(),
+            selectedDate: selectedDate.toLocaleString('en-us', options),
             selectedLoc,
         }
+ 
 
-        firebase.database().ref("/").child(`meetings/${myProfile.uid}/meetings/${userProfile.uid}`).push(userObj)
-            .then((resp) => {
-                const responseKey = resp.key;
-                console.log("Meeting Set.", resp);
+        firebase.database().ref(`meetingsArea/${myProfile.uid}/meetingsSec/${userProfile.uid}`).once('value', (data) => {
 
-                firebase.database().ref("/").child(`meetings/${userProfile.uid}/requests/${myProfile.uid}/${responseKey}`).set(myObj)
-                    .then(() => {
-                        console.log("Req Sent.");
-                        this.props.history.replace('/dashboard')
-                    })
-                    .catch(function (error) {
-                        console.log('Req Error:', error.message)
-                    });
-            })
-            .catch(function (error) {
-                console.log('Meeting Error:', error.message)
-            });
+            console.log(data.val());
+            let user = data.val();
+
+            if (user === null) {
+                firebase.database().ref("/").child(`meetingsArea/${myProfile.uid}/meetingsSec/${userProfile.uid}`).set(userObj)
+                // firebase.database().ref("/").child(`meetingsArea/${userProfile.uid}/requestsSec/${myProfile.uid}`).set(myObj)
+            }
+
+            firebase.database().ref("/").child(`meetingsArea/${myProfile.uid}/meetingsSec/${userProfile.uid}/meetings`).push(userDetails)
+                .then((resp) => {
+                    const responseKey = resp.key;
+                    console.log("Meeting Set.", resp);
+
+
+                    firebase.database().ref("/").child(`meetingsArea/${userProfile.uid}/requestsSec/${responseKey}`).set(myDetails)
+                        .then(() => {
+                            console.log("Req Sent.");
+                            this.props.history.replace('/dashboard')
+                        })
+                        .catch(function (error) {
+                            console.log('Req Error:', error.message)
+                        });
+                })
+                .catch(function (error) {
+                    console.log('Meeting Error:', error.message)
+                });
+        })
+
     }
 
     componentWillMount() {
@@ -328,8 +359,8 @@ class LocSearch extends Component {
                             onClose={() => this.handleReqDialog()}
                             aria-labelledby="alert-dialog-title"
                             aria-describedby="alert-dialog-description"
-                            // fullWidth
-                            // maxWidth="sm"
+                        // fullWidth
+                        // maxWidth={'sm'}
                         >
                             <DialogTitle id="alert-dialog-title">{`Hey ${myProfile.nickName},`}</DialogTitle>
                             <br />
