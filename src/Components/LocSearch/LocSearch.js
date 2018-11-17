@@ -186,7 +186,8 @@ class LocSearch extends Component {
                                           "title": `New Request From ${myProfile.displayName}`,
                                           "body": "You have a new meeting request",
                                           "icon": "https://firebasestorage.googleapis.com/v0/b/tinder-shinder-2.appspot.com/o/Notifications.png?alt=media&token=b4c86061-9644-4faa-a316-6461be0fe421", //Photo of sender
-                                          "click_action": `https://meetup-mak.firebaseapp.com/dashboard`,
+                                        //   "click_action": `https://meetup-mak.firebaseapp.com/dashboard`,
+                                          "click_action": `/dashboard`,
                                           "myObject": JSON.stringify(myDetails)
                                         }
                                       }),

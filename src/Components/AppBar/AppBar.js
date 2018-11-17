@@ -36,9 +36,12 @@ import SendIcon from '@material-ui/icons/SendOutlined';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
 import ErrorIcon from '@material-ui/icons/ErrorOutline';
 
-// let userAvail = JSON.parse(localStorage.getItem("user"));
 
-const styles = {
+import Modal from '@material-ui/core/Modal';
+import Button from '@material-ui/core/Button';
+import Avatar from '@material-ui/core/Avatar';
+
+const styles = theme => ({
     root: {
         flexGrow: 1,
     },
@@ -54,7 +57,31 @@ const styles = {
     list: {
         width: 250,
     },
-};
+
+    paper: {
+        position: 'absolute',
+        maxWidth: theme.spacing.unit * 50,
+        backgroundColor: theme.palette.background.paper,
+        boxShadow: theme.shadows[5],
+        padding: theme.spacing.unit * 4,
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: '70%',
+        borderRadius: '5px'
+    },
+
+    avatar: {
+        // margin: 10,
+        width: 50,
+        height: 50,
+    },
+    bigAvatar: {
+        margin: 10,
+        width: 110,
+        height: 110,
+    },
+});
 
 class MyAppBar extends React.Component {
 
@@ -68,6 +95,10 @@ class MyAppBar extends React.Component {
             anchorEl: null,
             
             sidePanel: false,
+            openModal: false,
+
+            notificationObj: {avatarURL:[]},
+            // userProfile: {},
         };
         this.showNotification = this.showNotification.bind(this)
     }
@@ -76,9 +107,11 @@ class MyAppBar extends React.Component {
         AuthState()
 
         const userAvail = JSON.parse(localStorage.getItem("user"));
+        const userProfile = JSON.parse(localStorage.getItem("userProfile"));
 
         return {
             userAvail,
+            userProfile,
         }
     }
 
@@ -112,13 +145,17 @@ class MyAppBar extends React.Component {
         });
     };
 
+    modalClose = () => {
+        this.setState({ openModal: false });
+    };
+
     componentDidMount(){
         this.showNotification()
     }
     
     render() {
         const { classes } = this.props;
-        const { anchorEl, userAvail, myProps } = this.state;
+        const { anchorEl, userAvail, myProps, notificationObj, userProfile } = this.state;
         const open = Boolean(anchorEl);
         
         const icons1 = [<DashboardIcon/>];
@@ -181,6 +218,9 @@ class MyAppBar extends React.Component {
 
                 <AppBar position="static">
                     <Toolbar>
+                    <Button variant="outlined" onClick={() => this.setState({openModal:true})} color="secondary">
+                                cancel
+                            </Button>
                         <IconButton onClick={this.toggleDrawer(true)} className={classes.menuButton} color="inherit" aria-label="Menu">
                             <MenuIcon />
                         </IconButton>
@@ -225,6 +265,48 @@ class MyAppBar extends React.Component {
                         </div>
                     </Toolbar>
                 </AppBar>
+
+<Modal
+                    aria-labelledby="simple-modal-title"
+                    aria-describedby="simple-modal-description"
+                    open={this.state.openModal}
+                    onClose={this.modalClose}
+                >
+                    <center>
+                        <div className={classes.paper}>
+                            <div style={{ display: 'flex', justifyContent: 'center' , alignItems: 'center'}}>
+                                <Avatar
+                                    alt={userProfile.displayName}
+                                    src={userProfile.avatarURL[0]}
+                                    className={classes.bigAvatar}
+                                />
+                                <Avatar
+                                    alt={notificationObj.displayName}
+                                    src={notificationObj.avatarURL[0]}
+                                    className={classes.bigAvatar}
+                                />
+                            </div>
+ 
+                            <Typography variant="caption" id="modal-title" style={{ fontSize: '18px' }}>
+                                Nice Choice!
+                            </Typography>
+                                <br />
+                            <Typography variant="subtitle1" id="modal-title">
+                                {/* Do you want to meet <span style={{ fontSize: '25px' }}>{dialogObj.displayName}</span> ? */}
+                            </Typography>
+                                <br />
+                            <Button variant="outlined" onClick={this.modalClose} color="secondary">
+                                cancel
+                            </Button> &nbsp; &nbsp;
+                            <Button variant="contained" color="primary" autoFocus>
+                                &nbsp;&nbsp;&nbsp; yes &nbsp;&nbsp;&nbsp;
+                            </Button>
+ 
+                        </div>
+                    </center>
+                </Modal>
+
+
             </div>
         );
     }
