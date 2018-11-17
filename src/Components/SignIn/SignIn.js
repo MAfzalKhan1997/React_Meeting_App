@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import firebase from '../../Config/firebase';
+import { askForPermissioToReceiveNotifications } from "../../push-notification";
 
 class SignIn extends Component {
 
@@ -13,7 +14,7 @@ class SignIn extends Component {
             // This gives you a Facebook Access Token. You can use it to access the Facebook API.
             // var token = result.credential.accessToken;
             // The signed-in user info.
-
+            askForPermissioToReceiveNotifications()
             var user = result.user.toJSON();
             console.log('SignIn')
 

@@ -9,6 +9,7 @@
     "date-fns": "^2.0.0-alpha.21",
     "firebase": "^5.5.7",
     "geofire": "^4.1.2",
+    "jquery": "^3.3.1",
     "material-ui-datetimepicker": "^1.0.7",
     "material-ui-pickers": "^2.0.1",
     "nuka-carousel": "^4.4.2",

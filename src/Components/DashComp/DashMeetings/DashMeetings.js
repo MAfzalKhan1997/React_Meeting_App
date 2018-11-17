@@ -36,13 +36,21 @@ const styles = theme => ({
     },
     details: {
         alignItems: 'center',
+        // alignItems: 'left',
+        textAlign: 'left',
     },
     column: {
-        flexBasis: '33.33%',
+        flexBasis: '70%',
+        // alignItems: 'left',
+        // textAlign: 'left',
     },
     helper: {
         borderLeft: `2px solid ${theme.palette.divider}`,
-        padding: `${theme.spacing.unit}px ${theme.spacing.unit * 2}px`,
+        // padding: `${theme.spacing.unit}px ${theme.spacing.unit * 2}px`,
+        paddingLeft: `${theme.spacing.unit * 2}px`,
+        marginRight: '-20px'
+        // alignItems: 'right',
+        // textAlign: 'left',
     },
     link: {
         color: theme.palette.primary.main,
@@ -114,13 +122,13 @@ class DashMeetings extends Component {
 
                                     <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                                         <div>
-                                            <Avatar 
-                                            className={classes.bigAvatar}
-                                            alt={value.displayName}
-                                            src={value.avatarURL}
+                                            <Avatar
+                                                className={classes.bigAvatar}
+                                                alt={value.displayName}
+                                                src={value.avatarURL}
                                             />
                                         </div>
-                                        <div style={{textAlign: 'left',}}>
+                                        <div style={{ textAlign: 'left', }}>
                                             <Typography variant="body2">{value.displayName}</Typography>
                                             <Typography variant="caption">{meetings[0].nickName}</Typography>
                                             {/* <Typography variant="caption">4.5</Typography> */}
@@ -131,26 +139,23 @@ class DashMeetings extends Component {
 
                                         return <div>
                                             <ExpansionPanelDetails className={classes.details}>
-                                                <div className={classes.column} />
+                                                {/* <div className={classes.column} /> */}
                                                 <div className={classes.column}>
-                                                    <Chip label="Barbados" className={classes.chip} onDelete={() => { }} />
+                                                    <Typography variant="subheading">{value.selectedLoc.name}</Typography>
+                                                    <Typography variant="body1">{value.selectedDate}</Typography>
                                                 </div>
-                                                <div className={classNames(classes.column, classes.helper)}>
+                                                <div className={classes.helper}>
+                                                    <Typography variant="body1">{value.selectedLoc.location.address}</Typography>
                                                     <Typography variant="caption">
-                                                        Select your destination of choice
-              <br />
-                                                        <a href="#sub-labels-and-columns" className={classes.link}>
-                                                            Learn more
-                                                        </a>
+                                                        Status:{value.status}
                                                     </Typography>
                                                 </div>
                                             </ExpansionPanelDetails>
                                             <Divider />
                                             <ExpansionPanelActions>
-                                                <Button size="small">Cancel</Button>
-                                                <Button size="small" color="primary">
-                                                    Save
-                                                </Button>
+                                                <Button size="small">
+                                                    Cancel
+                                                </Button> 
                                             </ExpansionPanelActions>
 
                                         </div>

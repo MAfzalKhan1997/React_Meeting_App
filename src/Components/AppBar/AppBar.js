@@ -1,6 +1,8 @@
 import SignIn from '../SignIn/SignIn'
 import SignOut from '../SignOut/SignOut'
 import AuthState from '../../Helper/AuthState'
+import firebase from '../../Config/firebase'
+
 
 import 'typeface-roboto';
 
@@ -67,6 +69,7 @@ class MyAppBar extends React.Component {
             
             sidePanel: false,
         };
+        this.showNotification = this.showNotification.bind(this)
     }
     
     static getDerivedStateFromProps() {
@@ -78,6 +81,16 @@ class MyAppBar extends React.Component {
             userAvail,
         }
     }
+
+    showNotification() {
+        firebase.messaging().onMessage(payload => {
+          for (const key in payload.data) {
+            console.log("object", JSON.parse(payload.data[key]));
+            this.setState({ notificationObj: JSON.parse(payload.data[key]) })
+        }
+        //   this.handleOpen()
+        })
+      }
     
 
     //   handleChange = event => {
@@ -98,6 +111,10 @@ class MyAppBar extends React.Component {
             sidePanel: open,
         });
     };
+
+    componentDidMount(){
+        this.showNotification()
+    }
     
     render() {
         const { classes } = this.props;

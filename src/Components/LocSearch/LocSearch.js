@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './LocSearch.css';
 import GetDirection from './GetDirection/GetDirection';
 import firebase from '../../Config/firebase';
+import $ from 'jquery'
 
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider } from 'material-ui-pickers';
@@ -165,8 +166,43 @@ class LocSearch extends Component {
 
                     firebase.database().ref("/").child(`meetingsArea/${userProfile.uid}/requestsSec/${responseKey}`).set(myDetails)
                         .then(() => {
+                            
                             console.log("Req Sent.");
                             this.props.history.replace('/dashboard')
+            
+                            
+                            firebase.database().ref("fcmTokens").once("value", function (snapshot) {
+                                // console.log(snapshot);
+                                snapshot.forEach(function (token) {
+                                  if (token.val() === userProfile.uid) { //Getting the token of the reciever using  if condition..!   
+                                    console.log(token.key)
+                                    $.ajax({
+                                      type: 'POST', url: "https://fcm.googleapis.com/fcm/send",
+                                      headers: { Authorization: 'key=AIzaSyBnd7z7xBqkbxzSFaWu7wdlyR1NxFztGZo' },
+                                      contentType: 'application/json',
+                                      dataType: 'json',
+                                      data: JSON.stringify({
+                                        "to": token.key, "notification": {
+                                          "title": `New Request From ${myProfile.displayName}`,
+                                          "body": "You have a new meeting request",
+                                          "icon": "https://firebasestorage.googleapis.com/v0/b/tinder-shinder-2.appspot.com/o/Notifications.png?alt=media&token=b4c86061-9644-4faa-a316-6461be0fe421", //Photo of sender
+                                          "click_action": `https://meetup-mak.firebaseapp.com/dashboard`,
+                                          "myObject": JSON.stringify(myDetails)
+                                        }
+                                      }),
+                                      success: function (response) {
+                                        console.log(response);
+                                        //Functions to run when notification is succesfully sent to reciever
+                                      },
+                                      error: function (xhr, status, error) {
+                                        //Functions To Run When There was an error While Sending Notification
+                                        console.log(xhr.error);
+                                      }
+                                    });
+                                  }
+                                });
+                              });
+                            
                         })
                         .catch(function (error) {
                             console.log('Req Error:', error.message)
