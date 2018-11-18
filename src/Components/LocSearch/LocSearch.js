@@ -54,6 +54,7 @@ const styles = theme => ({
     },
     bigAvatar: {
         boxShadow: '0 0 40px rgb(155, 0, 72)',
+        // boxShadow: '5px 5px rgba(0, 98, 90, 0.4), 10px 10px rgba(0, 98, 90, 0.3), 15px 15px rgba(0, 98, 90, 0.2), 20px 20px rgba(0, 98, 90, 0.1), 25px 25px rgba(0, 98, 90, 0.05)',
         margin: -10,
         width: 90,
         height: 90,
@@ -112,6 +113,9 @@ class LocSearch extends Component {
             hour: '2-digit',
             minute: '2-digit'
         };
+        
+        let duration = myProfile.mins.filter(mins => userProfile.mins.includes(mins) );
+        console.log('duration',duration)
  
         const userDetails = {
             displayName: userProfile.displayName,
@@ -124,6 +128,7 @@ class LocSearch extends Component {
             status: 'PENDING',
             selectedDate: selectedDate.toLocaleString('en-us', options),
             selectedLoc,
+            duration,
         }
 
         
@@ -145,7 +150,8 @@ class LocSearch extends Component {
             status: 'PENDING',
             selectedDate: selectedDate.toLocaleString('en-us', options),
             selectedLoc,
-        }
+            duration,
+        } 
  
 
         firebase.database().ref(`meetingsArea/${myProfile.uid}/meetingsSec/${userProfile.uid}`).once('value', (data) => {
@@ -218,15 +224,14 @@ class LocSearch extends Component {
 
     componentWillMount() {
 
-        const userAvail = JSON.parse(localStorage.getItem("user"));
+        // const userAvail = JSON.parse(localStorage.getItem("user"));
+        const myProfile = JSON.parse(localStorage.getItem("userProfile"));
+        // firebase.database().ref(`/profiles/${userAvail.uid}/`).once('value', (data) => {
 
-        firebase.database().ref(`/profiles/${userAvail.uid}/`).once('value', (data) => {
+            console.log('my Profiel', myProfile);
 
-            console.log('my Profiel', data.val());
-
-            this.setState({ myProfile: data.val() }, () => this.getLoc())
-        })
-    }
+            this.setState({ myProfile }, () => this.getLoc())
+        }
 
     componentDidMount() {
         const { userProfile } = this.props.location.state;

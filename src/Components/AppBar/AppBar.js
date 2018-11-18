@@ -2,13 +2,14 @@ import SignIn from '../SignIn/SignIn'
 import SignOut from '../SignOut/SignOut'
 import AuthState from '../../Helper/AuthState'
 import firebase from '../../Config/firebase'
-
+import './AppBar.css'
 
 import 'typeface-roboto';
 
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
+import classNames from 'classnames';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -41,6 +42,8 @@ import Modal from '@material-ui/core/Modal';
 import Button from '@material-ui/core/Button';
 import Avatar from '@material-ui/core/Avatar';
 
+import green from '@material-ui/core/colors/green';
+
 const styles = theme => ({
     root: {
         flexGrow: 1,
@@ -71,16 +74,24 @@ const styles = theme => ({
         borderRadius: '5px'
     },
 
-    avatar: {
-        // margin: 10,
-        width: 50,
-        height: 50,
-    },
+    // avatar: {
+    //     // margin: 10,
+    //     width: 50,
+    //     height: 50,
+    // },
     bigAvatar: {
-        margin: 10,
-        width: 110,
-        height: 110,
+        boxShadow: '0px 0px 0px 12px rgba(42, 196, 127, 0.9), 0px 0px 0px 28px rgba(42, 196, 127, 0.2)',
+        margin: '10px -10px',
+        width: 100,
+        height: 100,
     },
+
+    locBtn: {
+        color: green[400],
+    },
+    button: {
+        margin: '5px 0px 5px 0px',
+    }
 });
 
 class MyAppBar extends React.Component {
@@ -93,16 +104,16 @@ class MyAppBar extends React.Component {
             userAvail: null,
             auth: true,
             anchorEl: null,
-            
+
             sidePanel: false,
             openModal: false,
 
-            notificationObj: {avatarURL:[]},
-            // userProfile: {},
+            notificationObj: { avatarURL: [] },
+            userProfile: { avatarURL: [] },
         };
         this.showNotification = this.showNotification.bind(this)
     }
-    
+
     static getDerivedStateFromProps() {
         AuthState()
 
@@ -117,14 +128,14 @@ class MyAppBar extends React.Component {
 
     showNotification() {
         firebase.messaging().onMessage(payload => {
-          for (const key in payload.data) {
-            console.log("object", JSON.parse(payload.data[key]));
-            this.setState({ notificationObj: JSON.parse(payload.data[key]) })
-        }
-        //   this.handleOpen()
+            for (const key in payload.data) {
+                console.log("object", JSON.parse(payload.data[key]));
+                this.setState({ notificationObj: JSON.parse(payload.data[key]) })
+            }
+            //   this.handleOpen()
         })
-      }
-    
+    }
+
 
     //   handleChange = event => {
     //     this.setState({ auth: event.target.checked });
@@ -137,7 +148,7 @@ class MyAppBar extends React.Component {
     handleClose = () => {
         this.setState({ anchorEl: null });
     };
-    
+
 
     toggleDrawer = (open) => () => {
         this.setState({
@@ -149,20 +160,20 @@ class MyAppBar extends React.Component {
         this.setState({ openModal: false });
     };
 
-    componentDidMount(){
+    componentDidMount() {
         this.showNotification()
     }
-    
+
     render() {
         const { classes } = this.props;
         const { anchorEl, userAvail, myProps, notificationObj, userProfile } = this.state;
         const open = Boolean(anchorEl);
-        
-        const icons1 = [<DashboardIcon/>];
+
+        const icons1 = [<DashboardIcon />];
         const func1 = [() => this.props.history.push('/dashboard')];
-        const icons2 = [<InboxIcon/>,<StarIcon/>,<SendIcon/>];
-        const icons3 = [<DeleteIcon/>,<ErrorIcon/>];
-        
+        const icons2 = [<InboxIcon />, <StarIcon />, <SendIcon />];
+        const icons3 = [<DeleteIcon />, <ErrorIcon />];
+
         const sideList = (
             <div className={classes.list}>
                 <List>
@@ -196,7 +207,7 @@ class MyAppBar extends React.Component {
 
         return (
             <div className={classes.root}>
-                
+
                 {userAvail ?
                     <SwipeableDrawer
                         open={this.state.sidePanel}
@@ -218,8 +229,8 @@ class MyAppBar extends React.Component {
 
                 <AppBar position="static">
                     <Toolbar>
-                    <Button variant="outlined" onClick={() => this.setState({openModal:true})} color="secondary">
-                                cancel
+                        <Button variant="outlined" onClick={() => this.setState({ openModal: true })} color="secondary">
+                            cancel
                             </Button>
                         <IconButton onClick={this.toggleDrawer(true)} className={classes.menuButton} color="inherit" aria-label="Menu">
                             <MenuIcon />
@@ -266,42 +277,60 @@ class MyAppBar extends React.Component {
                     </Toolbar>
                 </AppBar>
 
-<Modal
+                <Modal
                     aria-labelledby="simple-modal-title"
                     aria-describedby="simple-modal-description"
-                    open={this.state.openModal}
+                    open={true}
                     onClose={this.modalClose}
                 >
                     <center>
                         <div className={classes.paper}>
-                            <div style={{ display: 'flex', justifyContent: 'center' , alignItems: 'center'}}>
+                        <br/>
+                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                                 <Avatar
-                                    alt={userProfile.displayName}
+                                    alt={userProfile.nickName}
                                     src={userProfile.avatarURL[0]}
                                     className={classes.bigAvatar}
                                 />
                                 <Avatar
-                                    alt={notificationObj.displayName}
-                                    src={notificationObj.avatarURL[0]}
+                                    alt={userProfile.nickName}
+                                    src={userProfile.avatarURL[0]}
                                     className={classes.bigAvatar}
                                 />
                             </div>
- 
-                            <Typography variant="caption" id="modal-title" style={{ fontSize: '18px' }}>
-                                Nice Choice!
+
+                            <Typography variant="body2" id="modal-title" style={{ color:'rgb(42, 196, 127)', marginTop:'25px', fontSize: '18px' }}>
+                                Ajji
+                                {/* {notificationObj.nickName} */}
                             </Typography>
-                                <br />
-                            <Typography variant="subtitle1" id="modal-title">
-                                {/* Do you want to meet <span style={{ fontSize: '25px' }}>{dialogObj.displayName}</span> ? */}
+                            <br />
+                            <Typography variant="caption" id="modal-title">
+                                Regent Plaza
+                                {/* {notificationObj.selectedLoc.name} */}
                             </Typography>
-                                <br />
-                            <Button variant="outlined" onClick={this.modalClose} color="secondary">
-                                cancel
-                            </Button> &nbsp; &nbsp;
-                            <Button variant="contained" color="primary" autoFocus>
-                                &nbsp;&nbsp;&nbsp; yes &nbsp;&nbsp;&nbsp;
+                            <Typography variant="caption" id="modal-title">
+                                Thursday, Nov 12, 2018, 4:05 A.M
+                                {/* {notificationObj.selectedDate} */}
+                            </Typography>
+                            {/* <br/> */}
+                            <Typography variant="body2" id="modal-title" style={{ color:'rgb(42, 196, 127)', marginTop:'10px' }}>
+                                40 minutes
+                                {/* {notificationObj.duration[0]} */}
+                            </Typography>
+                            <br />
+                            <Button variant="contained"  color="primary"  autoFocus fullWidth onClick={this.modalClose} className={classes.button}>
+                             Confirm
                             </Button>
- 
+                            <br/>
+                            <Button variant="outlined" fullWidth className={classNames(classes.locBtn,classes.button)}>
+                                Get Direction
+                            </Button>
+                            <br />
+                            <Button variant="contained" fullWidth onClick={this.modalClose} color="secondary" className={classes.button}>
+                                Cancel
+                            </Button>
+
+
                         </div>
                     </center>
                 </Modal>
