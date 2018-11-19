@@ -86,6 +86,11 @@ const styles = theme => ({
         height: 100,
     },
 
+    nickName: {
+        color: 'rgb(42, 196, 127)', 
+        marginTop: '25px', 
+        fontSize: '18px' 
+    },
     locBtn: {
         color: green[400],
     },
@@ -108,8 +113,8 @@ class MyAppBar extends React.Component {
             sidePanel: false,
             openModal: false,
 
-            notificationObj: { avatarURL: [] },
-            userProfile: { avatarURL: [] },
+            notificationObj: { avatarURL: [],selectedLoc:{name: ''}, duration: [] },
+            userProfile: { avatarURL: [], selectedLoc:{name: ''} },
         };
         this.showNotification = this.showNotification.bind(this)
     }
@@ -132,7 +137,7 @@ class MyAppBar extends React.Component {
                 console.log("object", JSON.parse(payload.data[key]));
                 this.setState({ notificationObj: JSON.parse(payload.data[key]) })
             }
-            //   this.handleOpen()
+            this.setState({ openModal: true })
         })
     }
 
@@ -229,9 +234,6 @@ class MyAppBar extends React.Component {
 
                 <AppBar position="static">
                     <Toolbar>
-                        <Button variant="outlined" onClick={() => this.setState({ openModal: true })} color="secondary">
-                            cancel
-                            </Button>
                         <IconButton onClick={this.toggleDrawer(true)} className={classes.menuButton} color="inherit" aria-label="Menu">
                             <MenuIcon />
                         </IconButton>
@@ -280,12 +282,12 @@ class MyAppBar extends React.Component {
                 <Modal
                     aria-labelledby="simple-modal-title"
                     aria-describedby="simple-modal-description"
-                    open={true}
+                    open={this.state.openModal}
                     onClose={this.modalClose}
                 >
                     <center>
                         <div className={classes.paper}>
-                        <br/>
+                            <br />
                             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                                 <Avatar
                                     alt={userProfile.nickName}
@@ -293,36 +295,35 @@ class MyAppBar extends React.Component {
                                     className={classes.bigAvatar}
                                 />
                                 <Avatar
-                                    alt={userProfile.nickName}
-                                    src={userProfile.avatarURL[0]}
+                                    alt={notificationObj.nickName}
+                                    src={notificationObj.avatarURL[0]}
                                     className={classes.bigAvatar}
                                 />
                             </div>
 
-                            <Typography variant="body2" id="modal-title" style={{ color:'rgb(42, 196, 127)', marginTop:'25px', fontSize: '18px' }}>
-                                Ajji
-                                {/* {notificationObj.nickName} */}
+                            <Typography variant="body2" id="modal-title" className={classes.nickName} >
+                                {/* Ajji */}
+                                {notificationObj.nickName}
                             </Typography>
                             <br />
                             <Typography variant="caption" id="modal-title">
-                                Regent Plaza
-                                {/* {notificationObj.selectedLoc.name} */}
+                                {/* Regent Plaza */}
+                                {notificationObj.selectedLoc.name}
                             </Typography>
                             <Typography variant="caption" id="modal-title">
-                                Thursday, Nov 12, 2018, 4:05 A.M
-                                {/* {notificationObj.selectedDate} */}
+                                {/* Thursday, Nov 12, 2018, 4:05 A.M */}
+                                {notificationObj.selectedDate}
                             </Typography>
-                            {/* <br/> */}
-                            <Typography variant="body2" id="modal-title" style={{ color:'rgb(42, 196, 127)', marginTop:'10px' }}>
-                                40 minutes
-                                {/* {notificationObj.duration[0]} */}
+                            <Typography variant="body2" id="modal-title" style={{ color: 'rgb(42, 196, 127)', marginTop: '5px' }}>
+                                {/* 40 minutes */}
+                                {notificationObj.duration[0]} minutes
                             </Typography>
                             <br />
-                            <Button variant="contained"  color="primary"  autoFocus fullWidth onClick={this.modalClose} className={classes.button}>
-                             Confirm
+                            <Button variant="contained" color="primary" autoFocus fullWidth onClick={this.modalClose} className={classes.button}>
+                                Confirm
                             </Button>
-                            <br/>
-                            <Button variant="outlined" fullWidth className={classNames(classes.locBtn,classes.button)}>
+                            <br />
+                            <Button variant="outlined" fullWidth className={classNames(classes.locBtn, classes.button)}>
                                 Get Direction
                             </Button>
                             <br />
@@ -330,11 +331,9 @@ class MyAppBar extends React.Component {
                                 Cancel
                             </Button>
 
-
                         </div>
                     </center>
                 </Modal>
-
 
             </div>
         );

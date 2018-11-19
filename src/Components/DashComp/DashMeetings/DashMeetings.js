@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 // import './Dashboard.css';
 
 import firebase from '../../../Config/firebase';
+import AddToCalendar from "react-add-to-calendar";
+import 'react-add-to-calendar/dist/react-add-to-calendar.css'
+import moment from "moment";
 
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
@@ -136,6 +139,19 @@ class DashMeetings extends Component {
 
                                     {meetings.map((value, index) => {
 
+                                        let event = {
+                                            title: `Meet ${value.nickName}`,
+                                            description: `Have a meetup with ${value.displayName} at ${value.selectedLoc.name}`,
+                                            location: `${value.selectedLoc.name},${value.selectedLoc.location.address},${value.selectedLoc.location.city},${value.selectedLoc.location.country}`,
+                                            startTime: `${moment(value.selectedDate).zone("-00:00").format('LLLL')}`,
+                                            endTime: `${moment(value.selectedDate).add(value.duration[0], 'm').zone("-00:00").format('LLLL')}`
+                                        };
+                                        let icon = { textOnly: 'none' };
+                                        let items = [
+                                            { google: 'Google' },
+                                            { apple: 'Apple' },
+                                            // { yahoo: 'Yahoo!' },
+                                         ];
                                         return <div key={index} >
                                             <ExpansionPanelDetails className={classes.details}>
                                                 {/* <div className={classes.column} /> */}
@@ -150,11 +166,21 @@ class DashMeetings extends Component {
                                                     </Typography>
                                                 </div>
                                             </ExpansionPanelDetails>
+
+                                            <div style={{ marginTop: '-10px'}}>
+                                                    <AddToCalendar
+                                                        event={event}
+                                                        buttonTemplate={icon}
+                                                        listItems={items}
+                                                        buttonLabel="Add to Calendar"
+                                                    />
+                                            </div>
+                                            
                                             <Divider />
                                             <ExpansionPanelActions>
-                                                <Button size="small">
-                                                    Cancel
-                                                </Button> 
+                                                    <Button size="small">
+                                                        Cancel
+                                                </Button>
                                             </ExpansionPanelActions>
 
                                         </div>

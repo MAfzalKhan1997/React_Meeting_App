@@ -40,6 +40,7 @@ const styles = theme => ({
     },
     column: {
         flexBasis: '70%',
+        // marginRight: '20px',
         // alignItems: 'left',
         // textAlign: 'left',
     },
