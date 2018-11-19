@@ -53,7 +53,9 @@ const styles = theme => ({
         flex: 1,
     },
     bigAvatar: {
-        boxShadow: '0 0 40px rgb(155, 0, 72)',
+        
+        boxShadow: '0px 0px 0px 10px rgba(42, 196, 127, 0.9), 0px 0px 0px 22px rgba(42, 196, 127, 0.2)',
+        // boxShadow: '0 0 40px rgb(155, 0, 72)',
         // boxShadow: '5px 5px rgba(0, 98, 90, 0.4), 10px 10px rgba(0, 98, 90, 0.3), 15px 15px rgba(0, 98, 90, 0.2), 20px 20px rgba(0, 98, 90, 0.1), 25px 25px rgba(0, 98, 90, 0.05)',
         margin: -10,
         width: 90,
@@ -406,7 +408,7 @@ class LocSearch extends Component {
                         >
                             <DialogTitle id="alert-dialog-title">{`Hey ${myProfile.nickName},`}</DialogTitle>
                             <br />
-                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '10px 0px 10px 0px' }}>
                                 <Avatar
                                     alt={myProfile.displayName}
                                     src={myProfile.avatarURL[0]}

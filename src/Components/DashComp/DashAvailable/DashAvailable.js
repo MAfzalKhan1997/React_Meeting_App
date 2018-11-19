@@ -197,8 +197,8 @@ class DashAvailable extends Component {
                                 Nice Choice!
                             </Typography>
                                 <br />
-                            <Typography variant="subtitle1" id="modal-title">
-                                Do you want to meet <span style={{ fontSize: '25px' }}>{dialogObj.displayName}</span> ?
+                            <Typography variant="subtitle2" id="modal-title">
+                                Do you want to meet <br/><span style={{ fontSize: '23px' }}>{dialogObj.displayName}</span> ?
                             </Typography>
                                 <br />
                             <Button variant="outlined" onClick={this.dialogClose} color="secondary">
