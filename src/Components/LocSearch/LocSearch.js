@@ -53,7 +53,7 @@ const styles = theme => ({
         flex: 1,
     },
     bigAvatar: {
-        
+
         boxShadow: '0px 0px 0px 10px rgba(42, 196, 127, 0.9), 0px 0px 0px 22px rgba(42, 196, 127, 0.2)',
         // boxShadow: '0 0 40px rgb(155, 0, 72)',
         // boxShadow: '5px 5px rgba(0, 98, 90, 0.4), 10px 10px rgba(0, 98, 90, 0.3), 15px 15px rgba(0, 98, 90, 0.2), 20px 20px rgba(0, 98, 90, 0.1), 25px 25px rgba(0, 98, 90, 0.05)',
@@ -107,7 +107,7 @@ class LocSearch extends Component {
 
         this.setState({ showReqDialog: false });
 
-        let options = {  
+        let options = {
             weekday: 'long',
             year: 'numeric',
             month: 'short',
@@ -115,112 +115,102 @@ class LocSearch extends Component {
             hour: '2-digit',
             minute: '2-digit'
         };
+
+        let duration = myProfile.mins.filter(mins => userProfile.mins.includes(mins));
+        console.log('duration', duration)
         
-        let duration = myProfile.mins.filter(mins => userProfile.mins.includes(mins) );
-        console.log('duration',duration)
- 
-        const userDetails = {
-            displayName: userProfile.displayName,
-            nickName: userProfile.nickName,
-            avatarURL: userProfile.avatarURL,
-            contact: userProfile.contact,
-            email: userProfile.email,
-            uid: userProfile.uid,
-
-            status: 'PENDING',
-            selectedDate: selectedDate.toLocaleString('en-us', options),
-            selectedLoc,
-            duration,
-        }
-
         
-        const userObj = {
-            displayName: userProfile.displayName,
-            avatarURL: userProfile.avatarURL[0],
-            contact: userProfile.contact,
-            email: userProfile.email,
-        }
-
-        const myDetails = {
-            displayName: myProfile.displayName,
-            nickName: myProfile.nickName,
-            avatarURL: myProfile.avatarURL,
-            contact: myProfile.contact,
-            email: myProfile.email,
-            uid: myProfile.uid,
-
-            status: 'PENDING',
-            selectedDate: selectedDate.toLocaleString('en-us', options),
-            selectedLoc,
-            duration,
-        } 
- 
-
         firebase.database().ref(`meetingsArea/${myProfile.uid}/meetingsSec/${userProfile.uid}`).once('value', (data) => {
-
+            
             console.log(data.val());
             let user = data.val();
-
+            
             if (user === null) {
+                
+                const userObj = {
+                    displayName: userProfile.displayName,
+                    avatarURL: userProfile.avatarURL[0],
+                    contact: userProfile.contact,
+                    email: userProfile.email,
+                }
+                
                 firebase.database().ref("/").child(`meetingsArea/${myProfile.uid}/meetingsSec/${userProfile.uid}`).set(userObj)
-                // firebase.database().ref("/").child(`meetingsArea/${userProfile.uid}/requestsSec/${myProfile.uid}`).set(myObj)
+            }
+            
+            
+            var newPostKey = firebase.database().ref().child(`meetingsArea/${myProfile.uid}/meetingsSec/${userProfile.uid}/meetings`).push().key;
+            
+            const meetingDetails = {
+                displayName1: myProfile.displayName,
+                nickName1: myProfile.nickName,
+                avatarURL1: myProfile.avatarURL,
+                contact1: myProfile.contact,
+                email1: myProfile.email,
+                uid1: myProfile.uid,
+    
+                displayName2: userProfile.displayName,
+                nickName2: userProfile.nickName,
+                avatarURL2: userProfile.avatarURL,
+                contact2: userProfile.contact,
+                email2: userProfile.email,
+                uid2: userProfile.uid,
+    
+                status: 'PENDING',
+                selectedDate: selectedDate.toLocaleString('en-us', options),
+                selectedLoc,
+                duration,
+                key: newPostKey,
             }
 
-            firebase.database().ref("/").child(`meetingsArea/${myProfile.uid}/meetingsSec/${userProfile.uid}/meetings`).push(userDetails)
-                .then((resp) => {
-                    const responseKey = resp.key;
-                    console.log("Meeting Set.", resp);
+            var updates = {};
+            updates[`meetingsArea/${myProfile.uid}/meetingsSec/${userProfile.uid}/meetings/` + newPostKey] = meetingDetails;
+            updates[`meetingsArea/${userProfile.uid}/requestsSec/` + newPostKey] = meetingDetails;
 
+            return firebase.database().ref().update(updates)
+                .then(resp => {
 
-                    firebase.database().ref("/").child(`meetingsArea/${userProfile.uid}/requestsSec/${responseKey}`).set(myDetails)
-                        .then(() => {
-                            
-                            console.log("Req Sent.");
-                            this.props.history.replace('/dashboard')
-            
-                            
-                            firebase.database().ref("fcmTokens").once("value", function (snapshot) {
-                                // console.log(snapshot);
-                                snapshot.forEach(function (token) {
-                                  if (token.val() === userProfile.uid) { //Getting the token of the reciever using  if condition..!   
-                                    console.log(token.key)
-                                    $.ajax({
-                                      type: 'POST', url: "https://fcm.googleapis.com/fcm/send",
-                                      headers: { Authorization: 'key=AIzaSyBnd7z7xBqkbxzSFaWu7wdlyR1NxFztGZo' },
-                                      contentType: 'application/json',
-                                      dataType: 'json',
-                                      data: JSON.stringify({
+                    console.log('res', resp, 'meetingset', meetingDetails)
+                    this.props.history.replace('/dashboard')
+
+                    firebase.database().ref("fcmTokens").once("value", function (snapshot) {
+                        // console.log(snapshot);
+                        snapshot.forEach(function (token) {
+                            if (token.val() === userProfile.uid) { //Getting the token of the reciever using  if condition..!   
+                                console.log(token.key)
+                                $.ajax({
+                                    type: 'POST', url: "https://fcm.googleapis.com/fcm/send",
+                                    headers: { Authorization: 'key=AIzaSyBnd7z7xBqkbxzSFaWu7wdlyR1NxFztGZo' },
+                                    contentType: 'application/json',
+                                    dataType: 'json',
+                                    data: JSON.stringify({
                                         "to": token.key, "notification": {
-                                          "title": `New Request From ${myProfile.displayName}`,
-                                          "body": "You have a new meeting request",
-                                          "icon": "https://firebasestorage.googleapis.com/v0/b/tinder-shinder-2.appspot.com/o/Notifications.png?alt=media&token=b4c86061-9644-4faa-a316-6461be0fe421", //Photo of sender
-                                        //   "click_action": `https://meetup-mak.firebaseapp.com/dashboard`,
-                                          "click_action": `/dashboard`,
-                                          "myObject": JSON.stringify(myDetails)
+                                            "title": `New Request From ${myProfile.displayName}`,
+                                            "body": "You have a new meeting request",
+                                            "icon": "https://firebasestorage.googleapis.com/v0/b/tinder-shinder-2.appspot.com/o/Notifications.png?alt=media&token=b4c86061-9644-4faa-a316-6461be0fe421", //Photo of sender
+                                            //   "click_action": `https://meetup-mak.firebaseapp.com/dashboard`,
+                                            "click_action": `/dashboard`,
+                                            "myObject": JSON.stringify(meetingDetails)
                                         }
-                                      }),
-                                      success: function (response) {
+                                    }),
+                                    success: function (response) {
                                         console.log(response);
                                         //Functions to run when notification is succesfully sent to reciever
-                                      },
-                                      error: function (xhr, status, error) {
+                                    },
+                                    error: function (xhr, status, error) {
                                         //Functions To Run When There was an error While Sending Notification
                                         console.log(xhr.error);
-                                      }
-                                    });
-                                  }
+                                    }
                                 });
-                              });
-                            
-                        })
-                        .catch(function (error) {
-                            console.log('Req Error:', error.message)
+                            }
                         });
+                    });
+
                 })
                 .catch(function (error) {
                     console.log('Meeting Error:', error.message)
                 });
         })
+
 
     }
 
@@ -230,10 +220,10 @@ class LocSearch extends Component {
         const myProfile = JSON.parse(localStorage.getItem("userProfile"));
         // firebase.database().ref(`/profiles/${userAvail.uid}/`).once('value', (data) => {
 
-            console.log('my Profiel', myProfile);
+        console.log('my Profiel', myProfile);
 
-            this.setState({ myProfile }, () => this.getLoc())
-        }
+        this.setState({ myProfile }, () => this.getLoc())
+    }
 
     componentDidMount() {
         const { userProfile } = this.props.location.state;

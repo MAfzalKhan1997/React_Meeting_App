@@ -113,9 +113,14 @@ class MyAppBar extends React.Component {
             sidePanel: false,
             openModal: false,
 
-            notificationObj: { avatarURL: [],selectedLoc:{name: ''}, duration: [] },
-            userProfile: { avatarURL: [], selectedLoc:{name: ''} },
+            notificationObj: { 
+                avatarURL1: [],
+                avatarURL2: [],
+                selectedLoc:{name: ''}, 
+                duration: [] 
+            }, 
         };
+
         this.showNotification = this.showNotification.bind(this)
     }
 
@@ -141,6 +146,47 @@ class MyAppBar extends React.Component {
         })
     }
 
+    setMeeting(meeting,status){
+
+        // const { meetingsKey } = this.state;
+        this.setState({ openModal: false });
+
+        const meetingObj = {
+
+            displayName1: meeting.displayName1,
+            nickName1: meeting.nickName1,
+            avatarURL1: meeting.avatarURL1,
+            contact1: meeting.contact1,
+            email1: meeting.email1,
+            uid1: meeting.uid1,
+
+            displayName2: meeting.displayName2,
+            nickName2: meeting.nickName2,
+            avatarURL2: meeting.avatarURL2,
+            contact2: meeting.contact2,
+            email2: meeting.email2,
+            uid2: meeting.uid2,
+
+            status: status,
+            selectedDate: meeting.selectedDate,
+            selectedLoc: meeting.selectedLoc,
+            duration: meeting.duration,
+            key: meeting.key,
+        }
+
+        console.log(meetingObj)
+        
+        var updates = {};
+        updates[`/meetingsArea/${meeting.uid1}/meetingsSec/${meeting.uid2}/meetings/` + meeting.key] = meetingObj;
+        updates[`/meetingsArea/${meeting.uid2}/requestsSec/` + meeting.key] = meetingObj;
+      
+        return firebase.database().ref().update(updates)
+        .then(resp => {
+            console.log(status,resp)
+        })
+
+
+    }
 
     //   handleChange = event => {
     //     this.setState({ auth: event.target.checked });
@@ -171,7 +217,7 @@ class MyAppBar extends React.Component {
 
     render() {
         const { classes } = this.props;
-        const { anchorEl, userAvail, myProps, notificationObj, userProfile } = this.state;
+        const { anchorEl, userAvail, myProps, notificationObj } = this.state;
         const open = Boolean(anchorEl);
 
         const icons1 = [<DashboardIcon />];
@@ -290,20 +336,20 @@ class MyAppBar extends React.Component {
                             <br />
                             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                                 <Avatar
-                                    alt={userProfile.nickName}
-                                    src={userProfile.avatarURL[0]}
+                                    alt={notificationObj.nickName2}
+                                    src={notificationObj.avatarURL2[0]}
                                     className={classes.bigAvatar}
                                 />
                                 <Avatar
-                                    alt={notificationObj.nickName}
-                                    src={notificationObj.avatarURL[0]}
+                                    alt={notificationObj.nickName1}
+                                    src={notificationObj.avatarURL1[0]}
                                     className={classes.bigAvatar}
                                 />
                             </div>
 
                             <Typography variant="body2" id="modal-title" className={classes.nickName} >
                                 {/* Ajji */}
-                                {notificationObj.nickName}
+                                {notificationObj.nickName1}
                             </Typography>
                             <br />
                             <Typography variant="caption" id="modal-title">
@@ -319,7 +365,7 @@ class MyAppBar extends React.Component {
                                 {notificationObj.duration[0]} minutes
                             </Typography>
                             <br />
-                            <Button variant="contained" color="primary" autoFocus fullWidth onClick={this.modalClose} className={classes.button}>
+                            <Button variant="contained" color="primary" autoFocus fullWidth onClick={() => this.setMeeting(notificationObj,'ACCEPTED')} className={classes.button}>
                                 Confirm
                             </Button>
                             <br />

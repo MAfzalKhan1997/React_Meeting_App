@@ -75,8 +75,7 @@ class DashMeetings extends Component {
     constructor() {
         super()
 
-        this.state = {
-            // meetings: null,
+        this.state = { 
             meeters: [],
         }
     }
@@ -97,6 +96,46 @@ class DashMeetings extends Component {
         })
     }
 
+    setMeeting(meeting,key,status){
+
+        // const { meetingsKey } = this.state;
+        
+        const meetingObj = {
+
+            displayName1: meeting.displayName1,
+            nickName1: meeting.nickName1,
+            avatarURL1: meeting.avatarURL1,
+            contact1: meeting.contact1,
+            email1: meeting.email1,
+            uid1: meeting.uid1,
+
+            displayName2: meeting.displayName2,
+            nickName2: meeting.nickName2,
+            avatarURL2: meeting.avatarURL2,
+            contact2: meeting.contact2,
+            email2: meeting.email2,
+            uid2: meeting.uid2,
+
+            status: status,
+            selectedDate: meeting.selectedDate,
+            selectedLoc: meeting.selectedLoc,
+            duration: meeting.duration,
+        }
+
+        console.log(meetingObj,key)
+        
+        var updates = {};
+        updates[`/meetingsArea/${meeting.uid1}/meetingsSec/${meeting.uid2}/meetings/` + key ] = meetingObj;
+        updates[`/meetingsArea/${meeting.uid2}/requestsSec/` + key ] = meetingObj;
+      
+        return firebase.database().ref().update(updates)
+        .then(resp => {
+            console.log(status,resp)
+        })
+
+
+    }
+
     render() {
 
         console.log(this.state.meeters)
@@ -114,9 +153,12 @@ class DashMeetings extends Component {
 
                             {meeters.map((value, index) => {
                                 let meetings = []
+                                let meetingsKey = []
+
                                 let data = value.meetings
                                 for (let key in data) {
                                     // console.log(data[key])
+                                    meetingsKey.push(key)
                                     meetings.push(data[key])
                                     // console.log(meetings)
                                 }
@@ -132,7 +174,7 @@ class DashMeetings extends Component {
                                         </div>
                                         <div style={{ textAlign: 'left', }}>
                                             <Typography variant="body2">{value.displayName}</Typography>
-                                            <Typography variant="caption">{meetings[0].nickName}</Typography>
+                                            <Typography variant="caption">{meetings[0].nickName2}</Typography>
                                             {/* <Typography variant="caption">4.5</Typography> */}
                                         </div>
                                     </ExpansionPanelSummary>
@@ -140,8 +182,8 @@ class DashMeetings extends Component {
                                     {meetings.map((value, index) => {
 
                                         let event = {
-                                            title: `Meet ${value.nickName}`,
-                                            description: `Have a meetup with ${value.displayName} at ${value.selectedLoc.name}`,
+                                            title: `Meet ${value.nickName2}`,
+                                            description: `Have a meetup with ${value.displayName2} at ${value.selectedLoc.name}`,
                                             location: `${value.selectedLoc.name},${value.selectedLoc.location.address},${value.selectedLoc.location.city},${value.selectedLoc.location.country}`,
                                             startTime: `${moment(value.selectedDate).zone("-00:00").format('LLLL')}`,
                                             endTime: `${moment(value.selectedDate).add(value.duration[0], 'm').zone("-00:00").format('LLLL')}`
@@ -178,7 +220,7 @@ class DashMeetings extends Component {
                                             
                                             <Divider />
                                             <ExpansionPanelActions>
-                                                    <Button size="small">
+                                                    <Button size="small" onClick={() => this.setMeeting(value,meetingsKey[index],'CANCELLED')}>
                                                         Cancel
                                                 </Button>
                                             </ExpansionPanelActions>

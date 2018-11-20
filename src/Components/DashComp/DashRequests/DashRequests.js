@@ -79,23 +79,70 @@ class DashRequests extends Component {
         this.state = {
             // meetings: null,
             meetings: [],
+            meetingsKey: [],
         }
     }
 
 
     componentWillMount() {
 
-        const { meetings } = this.state;
+        const { meetings, meetingsKey } = this.state;
 
         const userProfile = JSON.parse(localStorage.getItem("userProfile"));
 
         firebase.database().ref(`/meetingsArea/${userProfile.uid}/requestsSec`).on('child_added', (data) => {
 
+            meetingsKey.push(data.key)
+            console.log(meetingsKey)
             meetings.push(data.val())
-            // console.log('updated')
-            this.setState({ meetings })
+            
+            this.setState({ 
+                // userProfile, 
+                meetings, 
+                meetingsKey 
+            })
 
         })
+    }
+
+    setMeeting(meeting,index,status){
+
+        const { meetingsKey } = this.state;
+        
+        const meetingObj = {
+
+            displayName1: meeting.displayName1,
+            nickName1: meeting.nickName1,
+            avatarURL1: meeting.avatarURL1,
+            contact1: meeting.contact1,
+            email1: meeting.email1,
+            uid1: meeting.uid1,
+
+            displayName2: meeting.displayName2,
+            nickName2: meeting.nickName2,
+            avatarURL2: meeting.avatarURL2,
+            contact2: meeting.contact2,
+            email2: meeting.email2,
+            uid2: meeting.uid2,
+
+            status: status,
+            selectedDate: meeting.selectedDate,
+            selectedLoc: meeting.selectedLoc,
+            duration: meeting.duration,
+        }
+
+        console.log(meetingObj,index)
+        
+        var updates = {};
+        updates[`/meetingsArea/${meeting.uid1}/meetingsSec/${meeting.uid2}/meetings/` + meetingsKey[index]] = meetingObj;
+        updates[`/meetingsArea/${meeting.uid2}/requestsSec/` + meetingsKey[index]] = meetingObj;
+      
+        return firebase.database().ref().update(updates)
+        .then(resp => {
+            console.log(status,resp)
+        })
+
+
     }
 
     render() {
@@ -115,8 +162,8 @@ class DashRequests extends Component {
                             {meetings.map((value, index) => {
 
                                 let event = {
-                                    title: `Meet ${value.nickName}`,
-                                    description: `Have a meetup with ${value.displayName} at ${value.selectedLoc.name}`,
+                                    title: `Meet ${value.nickName1}`,
+                                    description: `Have a meetup with ${value.displayName1} at ${value.selectedLoc.name}`,
                                     location: `${value.selectedLoc.name},${value.selectedLoc.location.address},${value.selectedLoc.location.city},${value.selectedLoc.location.country}`,
                                     startTime: `${moment(value.selectedDate).zone("-00:00").format('LLLL')}`,
                                     endTime: `${moment(value.selectedDate).add(value.duration[0], 'm').zone("-00:00").format('LLLL')}`
@@ -134,13 +181,13 @@ class DashRequests extends Component {
                                         <div>
                                             <Avatar
                                                 className={classes.bigAvatar}
-                                                alt={value.displayName}
-                                                src={value.avatarURL[0]}
+                                                alt={value.nickName1}
+                                                src={value.avatarURL1[0]}
                                             />
                                         </div>
                                         <div style={{ textAlign: 'left', }}>
-                                            <Typography variant="body2">{value.displayName}</Typography>
-                                            <Typography variant="caption">{value.nickName}</Typography>
+                                            <Typography variant="body2">{value.displayName1}</Typography>
+                                            <Typography variant="caption">{value.nickName1}</Typography>
                                             {/* <Typography variant="caption">4.5</Typography> */}
                                         </div>
                                     </ExpansionPanelSummary>
@@ -170,10 +217,10 @@ class DashRequests extends Component {
 
                                     <Divider />
                                     <ExpansionPanelActions>
-                                        <Button size="small">
+                                        <Button size="small" onClick={() => this.setMeeting(value,index,'CANCELLED')}>
                                             Cancel
                                         </Button>
-                                        <Button size="small" color="primary">
+                                        <Button size="small" color="primary" onClick={() => this.setMeeting(value,index,'ACCEPTED')}>
                                             Accept
                                         </Button>
                                     </ExpansionPanelActions>
