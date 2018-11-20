@@ -2,6 +2,7 @@ import SignIn from '../SignIn/SignIn'
 import SignOut from '../SignOut/SignOut'
 import AuthState from '../../Helper/AuthState'
 import firebase from '../../Config/firebase'
+import GetDirection from '../GetDirection/GetDirection';
 import './AppBar.css'
 
 import 'typeface-roboto';
@@ -43,6 +44,10 @@ import Button from '@material-ui/core/Button';
 import Avatar from '@material-ui/core/Avatar';
 
 import green from '@material-ui/core/colors/green';
+
+import Dialog from '@material-ui/core/Dialog';
+import CloseIcon from '@material-ui/icons/Close';
+import Slide from '@material-ui/core/Slide';
 
 const styles = theme => ({
     root: {
@@ -87,17 +92,24 @@ const styles = theme => ({
     },
 
     nickName: {
-        color: 'rgb(42, 196, 127)', 
-        marginTop: '25px', 
-        fontSize: '18px' 
+        color: 'rgb(42, 196, 127)',
+        marginTop: '25px',
+        fontSize: '18px'
     },
     locBtn: {
         color: green[400],
     },
     button: {
         margin: '5px 0px 5px 0px',
-    }
+    },
+    appBar: {
+        position: 'relative',
+    },
 });
+
+function Transition(props) {
+    return <Slide direction="up" {...props} />;
+}
 
 class MyAppBar extends React.Component {
 
@@ -113,12 +125,14 @@ class MyAppBar extends React.Component {
             sidePanel: false,
             openModal: false,
 
-            notificationObj: { 
+            notificationObj: {
                 avatarURL1: [],
                 avatarURL2: [],
-                selectedLoc:{name: ''}, 
-                duration: [] 
-            }, 
+                selectedLoc: { name: '' },
+                duration: []
+            },
+
+            openMap: false,
         };
 
         this.showNotification = this.showNotification.bind(this)
@@ -146,7 +160,7 @@ class MyAppBar extends React.Component {
         })
     }
 
-    setMeeting(meeting,status){
+    setMeeting(meeting, status) {
 
         // const { meetingsKey } = this.state;
         this.setState({ openModal: false });
@@ -175,16 +189,31 @@ class MyAppBar extends React.Component {
         }
 
         console.log(meetingObj)
-        
+
         var updates = {};
         updates[`/meetingsArea/${meeting.uid1}/meetingsSec/${meeting.uid2}/meetings/` + meeting.key] = meetingObj;
         updates[`/meetingsArea/${meeting.uid2}/requestsSec/` + meeting.key] = meetingObj;
-      
-        return firebase.database().ref().update(updates)
-        .then(resp => {
-            console.log(status,resp)
-        })
 
+        return firebase.database().ref().update(updates)
+            .then(resp => {
+                console.log(status, resp)
+            })
+
+
+    }
+
+    showMap(obj) {
+        let lat = obj.location.lat;
+        let lng = obj.location.lng;
+
+        this.setState({
+            openMap: true,
+            // locName: obj.name,
+            destination: {
+                latitude: lat,
+                longitude: lng,
+            }
+        })
 
     }
 
@@ -211,13 +240,18 @@ class MyAppBar extends React.Component {
         this.setState({ openModal: false });
     };
 
+    handleMap() {
+        this.setState({ openMap: false });
+    };
+
+
     componentDidMount() {
         this.showNotification()
     }
 
     render() {
         const { classes } = this.props;
-        const { anchorEl, userAvail, myProps, notificationObj } = this.state;
+        const { anchorEl, userAvail, myProps, notificationObj, destination, userProfile } = this.state;
         const open = Boolean(anchorEl);
 
         const icons1 = [<DashboardIcon />];
@@ -365,12 +399,12 @@ class MyAppBar extends React.Component {
                                 {notificationObj.duration[0]} minutes
                             </Typography>
                             <br />
-                            <Button variant="contained" color="primary" autoFocus fullWidth onClick={() => this.setMeeting(notificationObj,'ACCEPTED')} className={classes.button}>
+                            <Button variant="contained" color="primary" autoFocus fullWidth onClick={() => this.setMeeting(notificationObj, 'ACCEPTED')} className={classes.button}>
                                 Confirm
                             </Button>
                             <br />
-                            <Button variant="outlined" fullWidth className={classNames(classes.locBtn, classes.button)}>
-                                Get Direction
+                            <Button variant="outlined" onClick={() => this.showMap(notificationObj.selectedLoc)} fullWidth className={classNames(classes.locBtn, classes.button)}>
+                                Show location
                             </Button>
                             <br />
                             <Button variant="contained" fullWidth onClick={this.modalClose} color="secondary" className={classes.button}>
@@ -380,6 +414,30 @@ class MyAppBar extends React.Component {
                         </div>
                     </center>
                 </Modal>
+
+
+                <Dialog
+                    fullScreen
+                    open={this.state.openMap}
+                    onClose={() => this.handleMap()}
+                    TransitionComponent={Transition}
+                >
+                    <AppBar className={classes.appBar}>
+                        <Toolbar>
+                            <IconButton style={{ marginLeft: '-15px' }} color="inherit" onClick={() => this.handleMap()} aria-label="Close">
+                                <CloseIcon />
+                            </IconButton>
+                            <Typography variant="h6" color="inherit" style={{ flex: '1' }}>
+                                {notificationObj.selectedLoc.name}
+                            </Typography>
+                            <Button size="small" color="inherit" onClick={() => this.refs.getDirection.getDirections()}>
+                                Get Directions
+                            </Button>
+                        </Toolbar>
+                    </AppBar>
+
+                    <GetDirection ref="getDirection" coords={userProfile.coords} destination={destination} />
+                </Dialog>
 
             </div>
         );

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './LocSearch.css';
-import GetDirection from './GetDirection/GetDirection';
+import GetDirection from '../GetDirection/GetDirection';
 import firebase from '../../Config/firebase';
 import $ from 'jquery'
 
