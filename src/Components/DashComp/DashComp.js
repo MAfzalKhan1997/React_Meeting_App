@@ -116,8 +116,8 @@ class DashComp extends Component {
                 <Button variant="fab" color="primary" onClick={() => this.goToUsers()}
                     style={{
                         position: 'fixed',
-                        bottom: '20px',
-                        right: '20px',
+                        bottom: '15px',
+                        right: '15px',
                     }} >
                     <AddIcon />
                 </Button>

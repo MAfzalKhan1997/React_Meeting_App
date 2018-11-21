@@ -19,7 +19,7 @@ class SignIn extends Component {
             console.log('SignIn')
 
             firebase.database().ref(`/profiles/${user.uid}/`).once('value', (data) => {
-                console.log('profile value', data.val());
+                // console.log('profile value', data.val());
                 localStorage.setItem("userProfile", JSON.stringify(data.val()));
             })
 

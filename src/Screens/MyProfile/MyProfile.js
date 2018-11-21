@@ -33,18 +33,14 @@ class MyProfile extends Component {
 
     render() {
         const { userAvail, userProfile } = this.state;
-        // const { state } = this.props.location;
+
         return (
             <center>
-                {/* {console.log('from appbar state', state)} */}
                 <div>
                     {
                         userAvail ?
                             userProfile ?
-                                // state.userProfile ?
                                 <MyProfileComp {...this.props}></MyProfileComp>
-                                // :
-                                // this.props.history.goBack()
                                 :
                                 this.props.history.push('/profile')
                             :
