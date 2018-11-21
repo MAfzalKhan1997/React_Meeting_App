@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import './Profile.css';
+import './CreateProfile.css';
 
-import CreateProfile from '../../Components/CreateProfile/CreateProfile';
+import Profile from '../../Components/Profile/Profile';
 import AuthState from '../../Helper/AuthState'
 
-class Profile extends Component {
+class CreateProfile extends Component {
 
   constructor() {
     super()
@@ -55,7 +55,7 @@ class Profile extends Component {
               userProfile ?
                 this.props.history.push('/dashboard')
                 :
-                <CreateProfile {...this.props}></CreateProfile>
+                <Profile {...this.props}></Profile>
               :
               this.props.history.push('/')
           }
@@ -65,4 +65,4 @@ class Profile extends Component {
   }
 }
 
-export default Profile;
+export default CreateProfile;

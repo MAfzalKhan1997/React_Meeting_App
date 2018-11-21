@@ -1,0 +1,35 @@
+.outerDiv{
+    width: 90% !important;
+    margin: 25px 0px 50px 0px !important;
+}
+
+.innerDiv{
+    box-shadow: 0px 1px 2px 1px rgba(0, 0, 0, 0.3); 
+    border-radius: 5px !important;
+    margin-top: -80px !important;
+    padding: 100px 0px 0px 0px !important;
+
+}
+
+.carouselDiv{ 
+    width: 200px !important;
+    height: 200px !important;
+    border-radius: 100% !important;
+    box-shadow: 0 10px 30px rgba(71, 63, 85, 0.411) !important; 
+}
+
+@media (max-width: 425px){ .carouselDiv { 
+    width: 180px !important;
+    height: 180px !important;
+}}
+
+.images{
+     height: 200px !important;
+     width: 200px !important; 
+     border-radius: 100% !important; 
+}
+
+@media (max-width: 425px){ .images { 
+    width: 180px !important;
+    height: 180px !important;
+}}

@@ -93,7 +93,7 @@ class DashRequests extends Component {
         firebase.database().ref(`/meetingsArea/${userProfile.uid}/requestsSec`).on('child_added', (data) => {
 
             meetingsKey.push(data.key)
-            console.log(meetingsKey)
+            // console.log(meetingsKey)
             meetings.push(data.val())
             
             this.setState({ 

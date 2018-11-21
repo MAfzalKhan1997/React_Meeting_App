@@ -217,6 +217,12 @@ class MyAppBar extends React.Component {
 
     }
 
+    toMyProfile() {
+        // const { userProfile } = this.state;
+
+        this.props.history.push('/my_profile')
+    }
+
     //   handleChange = event => {
     //     this.setState({ auth: event.target.checked });
     //   };
@@ -347,7 +353,9 @@ class MyAppBar extends React.Component {
                                 {
                                     userAvail ?
                                         <div onClick={this.handleClose} style={{ outline: 'none' }}>
-                                            <MenuItem>Profile</MenuItem>
+                                            {userProfile &&
+                                                <MenuItem onClick={() => this.toMyProfile()}>Profile</MenuItem>
+                                            }
                                             <MenuItem><SignOut {...myProps}></SignOut></MenuItem>
                                             {/* {console.log('meri', myProps)} */}
                                         </div>
@@ -359,86 +367,87 @@ class MyAppBar extends React.Component {
                     </Toolbar>
                 </AppBar>
 
-                <Modal
-                    aria-labelledby="simple-modal-title"
-                    aria-describedby="simple-modal-description"
-                    open={this.state.openModal}
-                    onClose={this.modalClose}
-                >
-                    <center>
-                        <div className={classes.paper}>
-                            <br />
-                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                <Avatar
-                                    alt={notificationObj.nickName2}
-                                    src={notificationObj.avatarURL2[0]}
-                                    className={classes.bigAvatar}
-                                />
-                                <Avatar
-                                    alt={notificationObj.nickName1}
-                                    src={notificationObj.avatarURL1[0]}
-                                    className={classes.bigAvatar}
-                                />
+                {userProfile &&
+                    <Modal
+                        aria-labelledby="simple-modal-title"
+                        aria-describedby="simple-modal-description"
+                        open={this.state.openModal}
+                        onClose={this.modalClose}
+                    >
+                        <center>
+                            <div className={classes.paper}>
+                                <br />
+                                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                    <Avatar
+                                        alt={notificationObj.nickName2}
+                                        src={notificationObj.avatarURL2[0]}
+                                        className={classes.bigAvatar}
+                                    />
+                                    <Avatar
+                                        alt={notificationObj.nickName1}
+                                        src={notificationObj.avatarURL1[0]}
+                                        className={classes.bigAvatar}
+                                    />
+                                </div>
+
+                                <Typography variant="body2" id="modal-title" className={classes.nickName} >
+                                    {/* Ajji */}
+                                    {notificationObj.nickName1}
+                                </Typography>
+                                <br />
+                                <Typography variant="caption" id="modal-title">
+                                    {/* Regent Plaza */}
+                                    {notificationObj.selectedLoc.name}
+                                </Typography>
+                                <Typography variant="caption" id="modal-title">
+                                    {/* Thursday, Nov 12, 2018, 4:05 A.M */}
+                                    {notificationObj.selectedDate}
+                                </Typography>
+                                <Typography variant="body2" id="modal-title" style={{ color: 'rgb(42, 196, 127)', marginTop: '5px' }}>
+                                    {/* 40 minutes */}
+                                    {notificationObj.duration[0]} minutes
+                            </Typography>
+                                <br />
+                                <Button variant="contained" color="primary" autoFocus fullWidth onClick={() => this.setMeeting(notificationObj, 'ACCEPTED')} className={classes.button}>
+                                    Confirm
+                            </Button>
+                                <br />
+                                <Button variant="outlined" onClick={() => this.showMap(notificationObj.selectedLoc)} fullWidth className={classNames(classes.locBtn, classes.button)}>
+                                    Show location
+                            </Button>
+                                <br />
+                                <Button variant="contained" fullWidth onClick={this.modalClose} color="secondary" className={classes.button}>
+                                    Cancel
+                            </Button>
+
                             </div>
-
-                            <Typography variant="body2" id="modal-title" className={classes.nickName} >
-                                {/* Ajji */}
-                                {notificationObj.nickName1}
-                            </Typography>
-                            <br />
-                            <Typography variant="caption" id="modal-title">
-                                {/* Regent Plaza */}
-                                {notificationObj.selectedLoc.name}
-                            </Typography>
-                            <Typography variant="caption" id="modal-title">
-                                {/* Thursday, Nov 12, 2018, 4:05 A.M */}
-                                {notificationObj.selectedDate}
-                            </Typography>
-                            <Typography variant="body2" id="modal-title" style={{ color: 'rgb(42, 196, 127)', marginTop: '5px' }}>
-                                {/* 40 minutes */}
-                                {notificationObj.duration[0]} minutes
-                            </Typography>
-                            <br />
-                            <Button variant="contained" color="primary" autoFocus fullWidth onClick={() => this.setMeeting(notificationObj, 'ACCEPTED')} className={classes.button}>
-                                Confirm
+                        </center>
+                    </Modal>
+                }
+                {userProfile &&
+                    <Dialog
+                        fullScreen
+                        open={this.state.openMap}
+                        onClose={() => this.handleMap()}
+                        TransitionComponent={Transition}
+                    >
+                        <AppBar className={classes.appBar}>
+                            <Toolbar>
+                                <IconButton style={{ marginLeft: '-15px' }} color="inherit" onClick={() => this.handleMap()} aria-label="Close">
+                                    <CloseIcon />
+                                </IconButton>
+                                <Typography variant="h6" color="inherit" style={{ flex: '1' }}>
+                                    {notificationObj.selectedLoc.name}
+                                </Typography>
+                                <Button size="small" color="inherit" onClick={() => this.refs.getDirection.getDirections()}>
+                                    Get Directions
                             </Button>
-                            <br />
-                            <Button variant="outlined" onClick={() => this.showMap(notificationObj.selectedLoc)} fullWidth className={classNames(classes.locBtn, classes.button)}>
-                                Show location
-                            </Button>
-                            <br />
-                            <Button variant="contained" fullWidth onClick={this.modalClose} color="secondary" className={classes.button}>
-                                Cancel
-                            </Button>
+                            </Toolbar>
+                        </AppBar>
 
-                        </div>
-                    </center>
-                </Modal>
-
-
-                <Dialog
-                    fullScreen
-                    open={this.state.openMap}
-                    onClose={() => this.handleMap()}
-                    TransitionComponent={Transition}
-                >
-                    <AppBar className={classes.appBar}>
-                        <Toolbar>
-                            <IconButton style={{ marginLeft: '-15px' }} color="inherit" onClick={() => this.handleMap()} aria-label="Close">
-                                <CloseIcon />
-                            </IconButton>
-                            <Typography variant="h6" color="inherit" style={{ flex: '1' }}>
-                                {notificationObj.selectedLoc.name}
-                            </Typography>
-                            <Button size="small" color="inherit" onClick={() => this.refs.getDirection.getDirections()}>
-                                Get Directions
-                            </Button>
-                        </Toolbar>
-                    </AppBar>
-
-                    <GetDirection ref="getDirection" coords={userProfile.coords} destination={destination} />
-                </Dialog>
-
+                        <GetDirection ref="getDirection" coords={userProfile.coords} destination={destination} />
+                    </Dialog>
+                }
             </div>
         );
     }

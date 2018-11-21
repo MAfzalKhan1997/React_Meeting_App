@@ -54,7 +54,7 @@ const styles = theme => ({
 });
 
 
-class CreateProfile extends Component {
+class Profile extends Component {
 
     constructor() {
         super()
@@ -309,7 +309,7 @@ class CreateProfile extends Component {
     }
 
     render() {
-        const { classes } = this.props;
+        const { classes, text, btnText } = this.props;
         const steps = this.getSteps();
         const { activeStep } = this.state;
 
@@ -346,7 +346,14 @@ class CreateProfile extends Component {
 
                 <div className={classes.root}>
 
-                    <Typography variant="title" >Create Profile</Typography>
+                    <Typography variant="title">
+                    {
+                        text ? 
+                        text
+                        :
+                        'Create Profile'
+                        }
+                    </Typography>
 
                     <Stepper activeStep={activeStep} orientation="vertical" style={{ textAlign: 'left' }}>
                         {steps.map((label, index) => {
@@ -383,7 +390,12 @@ class CreateProfile extends Component {
                         <Paper square elevation={0} className={classes.resetContainer}>
                             <Typography>All steps completed - you&quot;re finished now</Typography>
                             <Button onClick={() => { this.createDatabase() }} variant='outlined' size="large" color='secondary' className={classes.button}>
-                                Create Profile
+                            {
+                        btnText ? 
+                        btnText
+                        :
+                        'Create Profile'
+                        }
                   </Button>
                             <br />
                             <Button onClick={this.handleReset} className={classes.button}>
@@ -398,8 +410,8 @@ class CreateProfile extends Component {
     }
 }
 
-CreateProfile.propTypes = {
+Profile.propTypes = {
     classes: PropTypes.object,
 };
 
-export default withStyles(styles)(CreateProfile);
+export default withStyles(styles)(Profile);
