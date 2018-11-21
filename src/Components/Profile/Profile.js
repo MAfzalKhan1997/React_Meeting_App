@@ -56,8 +56,8 @@ const styles = theme => ({
 
 class Profile extends Component {
 
-    constructor() {
-        super()
+    constructor(props) {
+        super(props)
         this.state = {
             nickName: '',
             contact: '',
@@ -67,6 +67,9 @@ class Profile extends Component {
             coords: null,
 
             activeStep: 0,
+
+            profileText: props.profileText,
+            btnText: props.btnText,
         };
 
         this.updateText = this.updateText.bind(this);
@@ -277,7 +280,7 @@ class Profile extends Component {
     };
 
     createDatabase() {
-        const { nickName, contact, avatarURL, beverages, mins, coords } = this.state;
+        const { nickName, contact, avatarURL, beverages, mins, coords, btnText } = this.state;
 
         const userAvail = JSON.parse(localStorage.getItem("user"));
 
@@ -300,7 +303,12 @@ class Profile extends Component {
             .then(() => {
                 localStorage.setItem("userProfile", JSON.stringify(profileObj));
                 console.log("Profile created in DataBase.");
-                this.props.history.push('/dashboard')
+                if(!btnText){  
+                    this.props.history.push('/dashboard')
+                }
+                if(btnText){  
+                    this.props.profileUpdated()
+                }
             })
             .catch(function (error) {
                 console.log('Error:', error.message)
@@ -309,9 +317,9 @@ class Profile extends Component {
     }
 
     render() {
-        const { classes, text, btnText } = this.props;
+        const { classes } = this.props;
         const steps = this.getSteps();
-        const { activeStep } = this.state;
+        const { activeStep, profileText, btnText  } = this.state;
 
         return (
             <div>
@@ -348,8 +356,8 @@ class Profile extends Component {
 
                     <Typography variant="title">
                     {
-                        text ? 
-                        text
+                        profileText ? 
+                        profileText
                         :
                         'Create Profile'
                         }

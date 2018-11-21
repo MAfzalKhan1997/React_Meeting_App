@@ -33,6 +33,9 @@ import IconButton from '@material-ui/core/IconButton';
 
 import Avatar from '@material-ui/core/Avatar';
 
+import CheckIcon from '@material-ui/icons/CheckCircle';
+import Snackbar from '@material-ui/core/Snackbar';
+
 const styles = theme => ({
     root: {
         ...theme.mixins.gutters(),
@@ -56,6 +59,12 @@ const styles = theme => ({
     appBar: {
         position: 'relative',
     },
+    iconVariant: {
+        opacity: 0.9,
+        marginRight: theme.spacing.unit,
+        marginBottom: '-5px',
+        fontSize: '20px'
+    },
 });
 
 function Transition(props) {
@@ -70,7 +79,8 @@ class MyProfileComp extends Component {
         super()
 
         this.state = {
-            openEdit: false
+            openEdit: false,
+            profileSnack: false
         }
     }
 
@@ -95,6 +105,14 @@ class MyProfileComp extends Component {
             openEdit: edit,
         })
 
+    }
+
+    profileUpdated(){
+
+        this.setState({
+            openEdit: false,
+            profileSnack: true,
+        })
     }
 
 
@@ -251,9 +269,27 @@ class MyProfileComp extends Component {
                                 </Toolbar>
                             </AppBar>
                             <center>
-                                <Profile text={'Edit Profile'} btnText={'Save Profile'} />
+                                <Profile profileUpdated={() => this.profileUpdated()} profileText={'Edit Profile'} btnText={'Update Profile'} />
                             </center>
                         </Dialog>
+
+                         <Snackbar
+                    //   key={key}
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                    }}
+                    open={this.state.profileSnack}
+                    autoHideDuration={4000}
+                    onClose={() => this.setState({profileSnack: false})}
+                    //   onExited={this.handleExited}
+                    ContentProps={{
+                        'aria-describedby': 'message-id',
+                    }}
+                    message={<span id="message-id">
+                        <CheckIcon className={classes.iconVariant} />
+                        Profile Successfully Updated </span>}
+                />
 
                         <Button variant="fab" color="secondary" onClick={() => this.handleEdit(true)}
                             style={{
