@@ -147,6 +147,7 @@ class LocSearch extends Component {
                 contact1: myProfile.contact,
                 email1: myProfile.email,
                 uid1: myProfile.uid,
+                postStatus1:'null',
     
                 displayName2: userProfile.displayName,
                 nickName2: userProfile.nickName,
@@ -154,6 +155,7 @@ class LocSearch extends Component {
                 contact2: userProfile.contact,
                 email2: userProfile.email,
                 uid2: userProfile.uid,
+                postStatus2:'null',
     
                 status: 'PENDING',
                 selectedDate: selectedDate.toLocaleString('en-us', options),

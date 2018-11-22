@@ -84,7 +84,7 @@ const styles = theme => ({
         borderRadius: '5px'
     },
 
-    bigAvatar: {
+    popupAvatar: {
         boxShadow: '0px 0px 0px 12px rgba(42, 196, 127, 0.9), 0px 0px 0px 28px rgba(42, 196, 127, 0.2)',
         margin: '10px -10px',
         width: 100,
@@ -98,52 +98,42 @@ class DashRequests extends Component {
     constructor() {
         super()
 
-        this.state = {
-            // meetings: null,
+        this.state = { 
             meetings: [],
-            meetingsKey: [],
-            // postmeetings: [],
-
+ 
             postPopup: true
         }
     }
 
+    getData() {
 
-    componentWillMount() {
-
-        const { meetings, meetingsKey, postmeetings } = this.state;
+        const { meetings } = this.state;
+        
+        // this.setState({ 
+        //     meetings: []
+        // })
 
         const userProfile = JSON.parse(localStorage.getItem("userProfile"));
 
         firebase.database().ref(`/meetingsArea/${userProfile.uid}/requestsSec`).on('child_added', (data) => {
-
-            // let meetingTime = data.val().selectedDate
-            // // console.log(data.val().nickName1,meetingTime)
-            // let nowTime = new Date()
-            // // console.log(nowTime)
-            // let timeDiff = moment(nowTime).diff(meetingTime);
-            // console.log(timeDiff)
-            // if (timeDiff > 0) {
-            //     postmeetings.push(data.val())
-            //     console.log(postmeetings)
-            // }
-
-            meetingsKey.push(data.key)
-            // console.log(meetingsKey)
+ 
             meetings.push(data.val())
 
-            this.setState({
-                // userProfile, 
-                meetings,
-                meetingsKey
+            this.setState({ 
+                meetings, 
             })
 
         })
     }
 
-    setMeeting(meeting, index, status) {
 
-        const { meetingsKey } = this.state;
+    componentWillMount() {
+        this.getData()
+    }
+
+    setMeeting(meeting, status) {
+
+        // const { meetingsKey } = this.state;
 
         const meetingObj = {
 
@@ -153,6 +143,7 @@ class DashRequests extends Component {
             contact1: meeting.contact1,
             email1: meeting.email1,
             uid1: meeting.uid1,
+            postStatus1: meeting.postStatus1,
 
             displayName2: meeting.displayName2,
             nickName2: meeting.nickName2,
@@ -160,24 +151,71 @@ class DashRequests extends Component {
             contact2: meeting.contact2,
             email2: meeting.email2,
             uid2: meeting.uid2,
+            postStatus2: meeting.postStatus2,
 
             status: status,
             selectedDate: meeting.selectedDate,
             selectedLoc: meeting.selectedLoc,
             duration: meeting.duration,
+            key: meeting.key,
         }
 
-        console.log(meetingObj, index)
+        console.log(meetingObj)
 
         var updates = {};
-        updates[`/meetingsArea/${meeting.uid1}/meetingsSec/${meeting.uid2}/meetings/` + meetingsKey[index]] = meetingObj;
-        updates[`/meetingsArea/${meeting.uid2}/requestsSec/` + meetingsKey[index]] = meetingObj;
+        updates[`/meetingsArea/${meeting.uid1}/meetingsSec/${meeting.uid2}/meetings/` + meeting.key] = meetingObj;
+        updates[`/meetingsArea/${meeting.uid2}/requestsSec/` + meeting.key] = meetingObj;
 
         return firebase.database().ref().update(updates)
             .then(resp => {
                 console.log(status, resp)
+                this.getData()
             })
 
+
+    }
+
+    aboutMeeting(meeting, value) {
+
+        const meetingObj = {
+
+            displayName1: meeting.displayName1,
+            nickName1: meeting.nickName1,
+            avatarURL1: meeting.avatarURL1,
+            contact1: meeting.contact1,
+            email1: meeting.email1,
+            uid1: meeting.uid1,
+            postStatus1: meeting.postStatus1,
+
+            displayName2: meeting.displayName2,
+            nickName2: meeting.nickName2,
+            avatarURL2: meeting.avatarURL2,
+            contact2: meeting.contact2,
+            email2: meeting.email2,
+            uid2: meeting.uid2,
+            postStatus2: value,
+
+            status: meeting.status,
+            selectedDate: meeting.selectedDate,
+            selectedLoc: meeting.selectedLoc,
+            duration: meeting.duration,
+            key: meeting.key,
+        }
+
+        console.log(meetingObj)
+
+        var updates = {};
+        updates[`/meetingsArea/${meeting.uid1}/meetingsSec/${meeting.uid2}/meetings/` + meeting.key] = meetingObj;
+        updates[`/meetingsArea/${meeting.uid2}/requestsSec/` + meeting.key] = meetingObj;
+
+        return firebase.database().ref().update(updates)
+            .then(resp => {
+                console.log(value, resp)
+                // this.getData()
+                this.setState({
+                    postPopup: false,
+                })
+            })
 
     }
 
@@ -226,19 +264,17 @@ class DashRequests extends Component {
                                 // console.log(postmeetings)
                                 // }
                                 return <div key={index}>
-                      
-                                    {timeDiff > 0 && !value.postPopup &&
+
+                                    {timeDiff > 0 && value.postStatus2 === 'null' &&
                                         <Modal
                                             aria-labelledby="simple-modal-title"
                                             aria-describedby="simple-modal-description"
-                                            // open={this.state.postPopup}
-                                            open={true}
-                                        // open={false}
-                                        // onClose={this.postPopupClose}
+                                            open={this.state.postPopup}
+                                            onClose={this.postPopupClose}
                                         >
                                             <center>
                                                 <div className={classes.paper}>
-                      
+
                                                     <Typography variant="body2" id="modal-title" className={classes.nickName} >
                                                         Was Meeting Successfull with
                                                          <br /><br />
@@ -246,12 +282,12 @@ class DashRequests extends Component {
                                                             <Avatar
                                                                 alt={value.nickName2}
                                                                 src={value.avatarURL2[0]}
-                                                                className={classes.bigAvatar}
+                                                                className={classes.popupAvatar}
                                                             />
                                                             <Avatar
                                                                 alt={value.nickName1}
                                                                 src={value.avatarURL1[0]}
-                                                                className={classes.bigAvatar}
+                                                                className={classes.popupAvatar}
                                                             />
                                                         </div>
                                                         <br />
@@ -272,19 +308,19 @@ class DashRequests extends Component {
                                                         {value.duration[0]} minutes
                                                     </Typography>
                                                     <br />
-                                                    
-                                                    <Button variant="contained" color="primary" autoFocus >
-                                                    &nbsp; &nbsp;Yes&nbsp; &nbsp;
+
+                                                    <Button variant="contained" color="primary" autoFocus onClick={() => this.aboutMeeting(value, 'yes')} >
+                                                        &nbsp; &nbsp;Yes&nbsp; &nbsp;
                                                     </Button> &nbsp; &nbsp;
-                                                    <Button variant="contained" onClick={this.postPopupClose} color="secondary" >
-                                                    &nbsp; &nbsp;No&nbsp; &nbsp;
+                                                    <Button variant="contained"  color="secondary" onClick={() => this.aboutMeeting(value, 'no')} >
+                                                        &nbsp; &nbsp;No&nbsp; &nbsp;
                                                     </Button>
 
                                                 </div>
                                             </center>
                                         </Modal>
                                     }
-                                    
+
                                     <ExpansionPanel>
 
                                         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
@@ -327,10 +363,10 @@ class DashRequests extends Component {
 
                                         <Divider />
                                         <ExpansionPanelActions>
-                                            <Button size="small" onClick={() => this.setMeeting(value, index, 'CANCELLED')}>
+                                            <Button size="small" onClick={() => this.setMeeting(value, 'CANCELLED')}>
                                                 Cancel
                                         </Button>
-                                            <Button size="small" color="primary" onClick={() => this.setMeeting(value, index, 'ACCEPTED')}>
+                                            <Button size="small" color="primary" onClick={() => this.setMeeting(value, 'ACCEPTED')}>
                                                 Accept
                                         </Button>
                                         </ExpansionPanelActions>

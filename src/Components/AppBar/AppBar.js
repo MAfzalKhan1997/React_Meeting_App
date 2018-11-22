@@ -173,6 +173,7 @@ class MyAppBar extends React.Component {
             contact1: meeting.contact1,
             email1: meeting.email1,
             uid1: meeting.uid1,
+            postStatus1: meeting.postStatus1,
 
             displayName2: meeting.displayName2,
             nickName2: meeting.nickName2,
@@ -180,6 +181,7 @@ class MyAppBar extends React.Component {
             contact2: meeting.contact2,
             email2: meeting.email2,
             uid2: meeting.uid2,
+            postStatus2: meeting.postStatus2,
 
             status: status,
             selectedDate: meeting.selectedDate,
