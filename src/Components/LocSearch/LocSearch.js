@@ -222,7 +222,7 @@ class LocSearch extends Component {
         const myProfile = JSON.parse(localStorage.getItem("userProfile"));
         // firebase.database().ref(`/profiles/${userAvail.uid}/`).once('value', (data) => {
 
-        console.log('my Profiel', myProfile);
+        console.log('my Profile', myProfile);
 
         this.setState({ myProfile }, () => this.getLoc())
     }

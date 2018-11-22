@@ -98,9 +98,9 @@ class DashRequests extends Component {
     constructor() {
         super()
 
-        this.state = { 
+        this.state = {
             meetings: [],
- 
+
             postPopup: true
         }
     }
@@ -108,7 +108,7 @@ class DashRequests extends Component {
     getData() {
 
         const { meetings } = this.state;
-        
+
         // this.setState({ 
         //     meetings: []
         // })
@@ -116,11 +116,11 @@ class DashRequests extends Component {
         const userProfile = JSON.parse(localStorage.getItem("userProfile"));
 
         firebase.database().ref(`/meetingsArea/${userProfile.uid}/requestsSec`).on('child_added', (data) => {
- 
+
             meetings.push(data.val())
 
-            this.setState({ 
-                meetings, 
+            this.setState({
+                meetings,
             })
 
         })
@@ -169,7 +169,7 @@ class DashRequests extends Component {
         return firebase.database().ref().update(updates)
             .then(resp => {
                 console.log(status, resp)
-                this.getData()
+                // this.getData()
             })
 
 
@@ -258,14 +258,13 @@ class DashRequests extends Component {
                                 let nowTime = new Date()
                                 // console.log(nowTime)
                                 let timeDiff = moment(nowTime).diff(meetingTime);
-                                console.log(timeDiff)
-                                // if (timeDiff > 0) {
-                                // postmeetings.push(data.val())
-                                // console.log(postmeetings)
-                                // }
+                                console.log('request', timeDiff)
+
                                 return <div key={index}>
 
                                     {timeDiff > 0 && value.postStatus2 === 'null' &&
+                                        !(value.status === 'PENDING' || value.status === 'CANCELLED') &&
+
                                         <Modal
                                             aria-labelledby="simple-modal-title"
                                             aria-describedby="simple-modal-description"
@@ -312,7 +311,7 @@ class DashRequests extends Component {
                                                     <Button variant="contained" color="primary" autoFocus onClick={() => this.aboutMeeting(value, 'yes')} >
                                                         &nbsp; &nbsp;Yes&nbsp; &nbsp;
                                                     </Button> &nbsp; &nbsp;
-                                                    <Button variant="contained"  color="secondary" onClick={() => this.aboutMeeting(value, 'no')} >
+                                                    <Button variant="contained" color="secondary" onClick={() => this.aboutMeeting(value, 'no')} >
                                                         &nbsp; &nbsp;No&nbsp; &nbsp;
                                                     </Button>
 
@@ -363,12 +362,18 @@ class DashRequests extends Component {
 
                                         <Divider />
                                         <ExpansionPanelActions>
-                                            <Button size="small" onClick={() => this.setMeeting(value, 'CANCELLED')}>
+                                            <Button size="small" disabled={value.status !== 'PENDING' ? true : false}
+                                                onClick={() => this.setMeeting(value, 'CANCELLED')}
+                                            >
                                                 Cancel
-                                        </Button>
-                                            <Button size="small" color="primary" onClick={() => this.setMeeting(value, 'ACCEPTED')}>
+                                            </Button>
+
+                                            <Button size="small" color="primary"
+                                                disabled={value.status !== 'PENDING' ? true : false}
+                                                onClick={() => this.setMeeting(value, 'ACCEPTED')}
+                                            >
                                                 Accept
-                                        </Button>
+                                            </Button>
                                         </ExpansionPanelActions>
 
                                     </ExpansionPanel>

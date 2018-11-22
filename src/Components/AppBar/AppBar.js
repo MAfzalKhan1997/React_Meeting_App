@@ -419,7 +419,7 @@ class MyAppBar extends React.Component {
                             </Button>
                                 <br />
                                 <Button variant="contained" fullWidth onClick={this.modalClose} color="secondary" className={classes.button}>
-                                    Cancel
+                                    Close
                             </Button>
 
                             </div>

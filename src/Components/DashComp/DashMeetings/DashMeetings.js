@@ -20,6 +20,8 @@ import Divider from '@material-ui/core/Divider';
 
 import Avatar from '@material-ui/core/Avatar';
 
+import Modal from '@material-ui/core/Modal';
+
 const styles = theme => ({
     root: {
         width: '100%',
@@ -67,6 +69,26 @@ const styles = theme => ({
         width: 60,
         height: 60,
     },
+
+    paper: {
+        position: 'absolute',
+        maxWidth: theme.spacing.unit * 50,
+        backgroundColor: theme.palette.background.paper,
+        boxShadow: theme.shadows[5],
+        padding: theme.spacing.unit * 4,
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: '70%',
+        borderRadius: '5px'
+    },
+
+    popupAvatar: {
+        boxShadow: '0px 0px 0px 12px rgba(42, 196, 127, 0.9), 0px 0px 0px 28px rgba(42, 196, 127, 0.2)',
+        margin: '10px -10px',
+        width: 100,
+        height: 100,
+    },
 });
 
 
@@ -75,16 +97,17 @@ class DashMeetings extends Component {
     constructor() {
         super()
 
-        this.state = { 
+        this.state = {
             meeters: [],
+
+            postPopup: true
         }
     }
 
 
-    componentWillMount() {
+    getData() {
 
         const { meeters } = this.state;
-
         const userProfile = JSON.parse(localStorage.getItem("userProfile"));
 
         firebase.database().ref(`/meetingsArea/${userProfile.uid}/meetingsSec`).on('child_added', (data) => {
@@ -96,10 +119,12 @@ class DashMeetings extends Component {
         })
     }
 
-    setMeeting(meeting,key,status){
+    componentWillMount() {
+        this.getData()
+    }
 
-        // const { meetingsKey } = this.state;
-        
+    setMeeting(meeting, status) {
+
         const meetingObj = {
 
             displayName1: meeting.displayName1,
@@ -108,6 +133,7 @@ class DashMeetings extends Component {
             contact1: meeting.contact1,
             email1: meeting.email1,
             uid1: meeting.uid1,
+            postStatus1: meeting.postStatus1,
 
             displayName2: meeting.displayName2,
             nickName2: meeting.nickName2,
@@ -115,26 +141,75 @@ class DashMeetings extends Component {
             contact2: meeting.contact2,
             email2: meeting.email2,
             uid2: meeting.uid2,
+            postStatus2: meeting.postStatus2,
 
             status: status,
             selectedDate: meeting.selectedDate,
             selectedLoc: meeting.selectedLoc,
             duration: meeting.duration,
+            key: meeting.key,
         }
 
-        console.log(meetingObj,key)
-        
+        console.log(meetingObj)
+
         var updates = {};
-        updates[`/meetingsArea/${meeting.uid1}/meetingsSec/${meeting.uid2}/meetings/` + key ] = meetingObj;
-        updates[`/meetingsArea/${meeting.uid2}/requestsSec/` + key ] = meetingObj;
-      
+        updates[`/meetingsArea/${meeting.uid1}/meetingsSec/${meeting.uid2}/meetings/` + meeting.key] = meetingObj;
+        updates[`/meetingsArea/${meeting.uid2}/requestsSec/` + meeting.key] = meetingObj;
+
         return firebase.database().ref().update(updates)
-        .then(resp => {
-            console.log(status,resp)
-        })
-
-
+            .then(resp => {
+                console.log(status, resp)
+                // this.getData()
+            })
     }
+
+    aboutMeeting(meeting, value) {
+
+        const meetingObj = {
+
+            displayName1: meeting.displayName1,
+            nickName1: meeting.nickName1,
+            avatarURL1: meeting.avatarURL1,
+            contact1: meeting.contact1,
+            email1: meeting.email1,
+            uid1: meeting.uid1,
+            postStatus1: value,
+
+            displayName2: meeting.displayName2,
+            nickName2: meeting.nickName2,
+            avatarURL2: meeting.avatarURL2,
+            contact2: meeting.contact2,
+            email2: meeting.email2,
+            uid2: meeting.uid2,
+            postStatus2: meeting.postStatus2,
+
+            status: meeting.status,
+            selectedDate: meeting.selectedDate,
+            selectedLoc: meeting.selectedLoc,
+            duration: meeting.duration,
+            key: meeting.key,
+        }
+
+        console.log(meetingObj)
+
+        var updates = {};
+        updates[`/meetingsArea/${meeting.uid1}/meetingsSec/${meeting.uid2}/meetings/` + meeting.key] = meetingObj;
+        updates[`/meetingsArea/${meeting.uid2}/requestsSec/` + meeting.key] = meetingObj;
+
+        return firebase.database().ref().update(updates)
+            .then(resp => {
+                console.log(value, resp)
+                // this.getData()
+                this.setState({
+                    postPopup: false,
+                })
+            })
+    }
+
+
+    postPopupClose = () => {
+        this.setState({ postPopup: false });
+    };
 
     render() {
 
@@ -193,8 +268,76 @@ class DashMeetings extends Component {
                                             { google: 'Google' },
                                             { apple: 'Apple' },
                                             // { yahoo: 'Yahoo!' },
-                                         ];
+                                        ];
+
+                                        let meetingTime = value.selectedDate
+                                        // console.log(value.nickName1, meetingTime)
+                                        let nowTime = new Date()
+                                        // console.log(nowTime)
+                                        let timeDiff = moment(nowTime).diff(meetingTime);
+                                        console.log('meeting', timeDiff)
+
                                         return <div key={index} >
+
+                                            {timeDiff > 0 && value.postStatus1 === 'null' &&
+                                                !(value.status === 'PENDING' || value.status === 'CANCELLED') &&
+
+                                                <Modal
+                                                    aria-labelledby="simple-modal-title"
+                                                    aria-describedby="simple-modal-description"
+                                                    open={this.state.postPopup}
+                                                    onClose={this.postPopupClose}
+                                                >
+                                                    <center>
+                                                        <div className={classes.paper}>
+
+                                                            <Typography variant="body2" id="modal-title" className={classes.nickName} >
+                                                                Was Meeting Successfull with
+                                                         <br /><br />
+                                                                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                                                    <Avatar
+                                                                        alt={value.nickName1}
+                                                                        src={value.avatarURL1[0]}
+                                                                        className={classes.popupAvatar}
+                                                                    />
+                                                                    <Avatar
+                                                                        alt={value.nickName2}
+                                                                        src={value.avatarURL2[0]}
+                                                                        className={classes.popupAvatar}
+                                                                    />
+                                                                </div>
+                                                                <br />
+                                                                <span style={{ fontSize: '18px' }}>{value.displayName2}</span> ?
+                                                    </Typography>
+
+                                                            <br />
+                                                            <Typography variant="caption" id="modal-title">
+                                                                {/* Regent Plaza */}
+                                                                {value.selectedLoc.name}
+                                                            </Typography>
+                                                            <Typography variant="caption" id="modal-title">
+                                                                {/* Thursday, Nov 12, 2018, 4:05 A.M */}
+                                                                {value.selectedDate}
+                                                            </Typography>
+                                                            <Typography variant="body2" id="modal-title" style={{ color: 'rgb(42, 196, 127)', marginTop: '5px' }}>
+                                                                {/* 40 minutes */}
+                                                                {value.duration[0]} minutes
+                                                    </Typography>
+                                                            <br />
+
+                                                            <Button variant="contained" color="primary" autoFocus onClick={() => this.aboutMeeting(value, 'yes')} >
+                                                                &nbsp; &nbsp;Yes&nbsp; &nbsp;
+                                                    </Button> &nbsp; &nbsp;
+                                                    <Button variant="contained" color="secondary" onClick={() => this.aboutMeeting(value, 'no')} >
+                                                                &nbsp; &nbsp;No&nbsp; &nbsp;
+                                                    </Button>
+
+                                                        </div>
+                                                    </center>
+                                                </Modal>
+                                            }
+
+
                                             <ExpansionPanelDetails className={classes.details}>
                                                 {/* <div className={classes.column} /> */}
                                                 <div className={classes.column}>
@@ -209,19 +352,22 @@ class DashMeetings extends Component {
                                                 </div>
                                             </ExpansionPanelDetails>
 
-                                            <div style={{ marginTop: '-10px'}}>
-                                                    <AddToCalendar
-                                                        event={event}
-                                                        buttonTemplate={icon}
-                                                        listItems={items}
-                                                        buttonLabel="Add to Calendar"
-                                                    />
+                                            <div style={{ marginTop: '-10px' }}>
+                                                <AddToCalendar
+                                                    event={event}
+                                                    buttonTemplate={icon}
+                                                    listItems={items}
+                                                    buttonLabel="Add to Calendar"
+                                                />
                                             </div>
-                                            
+
                                             <Divider />
                                             <ExpansionPanelActions>
-                                                    <Button size="small" onClick={() => this.setMeeting(value,meetingsKey[index],'CANCELLED')}>
-                                                        Cancel
+                                                <Button size="small"
+                                                    disabled={value.status !== 'PENDING' ? true : false}
+                                                    onClick={() => this.setMeeting(value, 'CANCELLED')}
+                                                >
+                                                    Cancel
                                                 </Button>
                                             </ExpansionPanelActions>
 
