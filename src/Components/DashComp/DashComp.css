@@ -16,3 +16,17 @@
 
   }
   }
+
+
+  @media (max-width: 425px) { .fontDecrease{ 
+      
+    font-size: 85% !important; 
+
+  }} 
+
+  /* @media (max-width: 425px) { .dec{ 
+      
+    width: 50px !important; 
+    height: 50px !important; 
+
+  }}  */

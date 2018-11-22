@@ -5,6 +5,7 @@ import firebase from '../../Config/firebase'
 import GetDirection from '../GetDirection/GetDirection';
 import './AppBar.css'
 
+import moment from "moment";
 import 'typeface-roboto';
 
 import React from 'react';
@@ -298,6 +299,17 @@ class MyAppBar extends React.Component {
             </div>
         );
 
+                                let meetingTime = notificationObj.selectedDate
+                                // console.log(value.nickName1, meetingTime)
+                                let nowTime = new Date()
+                                // console.log(nowTime)
+                                let timeDiff = moment(nowTime).diff(meetingTime);
+                                console.log('request', timeDiff)
+                                
+                                // if(timeDiff > 0 && value.status === 'PENDING' ){
+                                    // this.setMeeting(value, index, 'CANCELLED')
+                                // }
+
         return (
             <div className={classes.root}>
 
@@ -369,7 +381,7 @@ class MyAppBar extends React.Component {
                     </Toolbar>
                 </AppBar>
 
-                {userProfile &&
+                {userProfile && timeDiff < 0 &&
                     <Modal
                         aria-labelledby="simple-modal-title"
                         aria-describedby="simple-modal-description"

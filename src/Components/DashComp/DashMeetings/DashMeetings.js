@@ -59,9 +59,11 @@ const styles = theme => ({
     link: {
         color: theme.palette.primary.main,
         textDecoration: 'none',
-        '&:hover': {
-            textDecoration: 'underline',
-        },
+        textTransform: 'capitalize',
+        fontWeight: 'bolder',
+        // '&:hover': {
+        //     textDecoration: 'underline',
+        // },
     },
     bigAvatar: {
         // boxShadow: '0 0 40px rgb(155, 0, 72)',
@@ -109,6 +111,10 @@ class DashMeetings extends Component {
 
         const { meeters } = this.state;
         const userProfile = JSON.parse(localStorage.getItem("userProfile"));
+
+        // this.setState({
+        //     meeters:[]
+        // })
 
         firebase.database().ref(`/meetingsArea/${userProfile.uid}/meetingsSec`).on('child_added', (data) => {
 
@@ -228,12 +234,10 @@ class DashMeetings extends Component {
 
                             {meeters.map((value, index) => {
                                 let meetings = []
-                                let meetingsKey = []
 
                                 let data = value.meetings
                                 for (let key in data) {
                                     // console.log(data[key])
-                                    meetingsKey.push(key)
                                     meetings.push(data[key])
                                     // console.log(meetings)
                                 }
@@ -276,6 +280,24 @@ class DashMeetings extends Component {
                                         // console.log(nowTime)
                                         let timeDiff = moment(nowTime).diff(meetingTime);
                                         console.log('meeting', timeDiff)
+
+
+                                        let status;
+
+                                        if (value.postStatus1 !== 'null' && value.postStatus2 !== 'null') {
+                                            if (value.postStatus1 === 'yes' && value.postStatus2 === 'yes') {
+                                                status = 'SUCCESSFULL'
+                                            }
+                                            if (value.postStatus1 === 'no' && value.postStatus2 === 'no') {
+                                                status = 'UNSUCCESSFULL'
+                                            }
+                                            if (value.postStatus1 !== value.postStatus2) {
+                                                status = 'COMPLICATED'
+                                            }
+                                        }
+                                        else {
+                                            status = value.status
+                                        }
 
                                         return <div key={index} >
 
@@ -347,20 +369,21 @@ class DashMeetings extends Component {
                                                 <div className={classes.helper}>
                                                     <Typography variant="body1">{value.selectedLoc.location.address}</Typography>
                                                     <Typography variant="caption">
-                                                        Status:{value.status}
+                                                    Status: <span className={classes.link}>{status.toLowerCase()}</span>
                                                     </Typography>
                                                 </div>
                                             </ExpansionPanelDetails>
 
-                                            <div style={{ marginTop: '-10px' }}>
-                                                <AddToCalendar
-                                                    event={event}
-                                                    buttonTemplate={icon}
-                                                    listItems={items}
-                                                    buttonLabel="Add to Calendar"
-                                                />
-                                            </div>
-
+                                            {(value.status !== 'CANCELLED' && value.status !== 'PENDING') &&
+                                                <div style={{ marginTop: '-10px' }}>
+                                                    <AddToCalendar
+                                                        event={event}
+                                                        buttonTemplate={icon}
+                                                        listItems={items}
+                                                        buttonLabel="Add to Calendar"
+                                                    />
+                                                </div>
+                                            }
                                             <Divider />
                                             <ExpansionPanelActions>
                                                 <Button size="small"
