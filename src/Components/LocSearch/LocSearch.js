@@ -118,28 +118,28 @@ class LocSearch extends Component {
 
         let duration = myProfile.mins.filter(mins => userProfile.mins.includes(mins));
         console.log('duration', duration)
-        
-        
+
+
         firebase.database().ref(`meetingsArea/${myProfile.uid}/meetingsSec/${userProfile.uid}`).once('value', (data) => {
-            
+
             console.log(data.val());
             let user = data.val();
-            
+
             if (user === null) {
-                
+
                 const userObj = {
                     displayName: userProfile.displayName,
                     avatarURL: userProfile.avatarURL[0],
                     contact: userProfile.contact,
                     email: userProfile.email,
                 }
-                
+
                 firebase.database().ref("/").child(`meetingsArea/${myProfile.uid}/meetingsSec/${userProfile.uid}`).set(userObj)
             }
-            
-            
+
+
             var newPostKey = firebase.database().ref().child(`meetingsArea/${myProfile.uid}/meetingsSec/${userProfile.uid}/meetings`).push().key;
-            
+
             const meetingDetails = {
                 displayName1: myProfile.displayName,
                 nickName1: myProfile.nickName,
@@ -147,16 +147,16 @@ class LocSearch extends Component {
                 contact1: myProfile.contact,
                 email1: myProfile.email,
                 uid1: myProfile.uid,
-                postStatus1:'null',
-    
+                postStatus1: 'null',
+
                 displayName2: userProfile.displayName,
                 nickName2: userProfile.nickName,
                 avatarURL2: userProfile.avatarURL,
                 contact2: userProfile.contact,
                 email2: userProfile.email,
                 uid2: userProfile.uid,
-                postStatus2:'null',
-    
+                postStatus2: 'null',
+
                 status: 'PENDING',
                 selectedDate: selectedDate.toLocaleString('en-us', options),
                 selectedLoc,
@@ -186,11 +186,12 @@ class LocSearch extends Component {
                                     dataType: 'json',
                                     data: JSON.stringify({
                                         "to": token.key, "notification": {
-                                            "title": `New Request From ${myProfile.displayName}`,
-                                            "body": "You have a new meeting request",
-                                            "icon": "https://firebasestorage.googleapis.com/v0/b/tinder-shinder-2.appspot.com/o/Notifications.png?alt=media&token=b4c86061-9644-4faa-a316-6461be0fe421", //Photo of sender
-                                            //   "click_action": `https://meetup-mak.firebaseapp.com/dashboard`,
-                                            "click_action": `/dashboard`,
+                                            "title": `${myProfile.displayName}`,
+                                            "body": "Sent you a meeting request",
+                                            // "icon": "https://firebasestorage.googleapis.com/v0/b/tinder-shinder-2.appspot.com/o/Notifications.png?alt=media&token=b4c86061-9644-4faa-a316-6461be0fe421", //Photo of sender
+                                            "icon": `${myProfile.avatarURL[0]}`, //Photo of sender
+                                            "click_action": `https://meetup-mak.firebaseapp.com/dashboard`,
+                                            // "click_action": `/dashboard`,
                                             "myObject": JSON.stringify(meetingDetails)
                                         }
                                     }),

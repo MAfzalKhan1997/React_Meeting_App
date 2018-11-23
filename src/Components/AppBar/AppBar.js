@@ -50,6 +50,8 @@ import Dialog from '@material-ui/core/Dialog';
 import CloseIcon from '@material-ui/icons/Close';
 import Slide from '@material-ui/core/Slide';
 
+import FaceIcon from '@material-ui/icons/FaceOutlined';
+
 const styles = theme => ({
     root: {
         flexGrow: 1,
@@ -106,6 +108,18 @@ const styles = theme => ({
     appBar: {
         position: 'relative',
     },
+    
+    avatar: {
+        width: 60,
+        height: 60,
+        top: 60,
+        left: 10
+      },
+      drawerText: {
+        paddingLeft: '10px',
+        // backgroundColor: '#e0f2f111',
+        color: "white"
+      }
 });
 
 function Transition(props) {
@@ -263,15 +277,28 @@ class MyAppBar extends React.Component {
         const { anchorEl, userAvail, myProps, notificationObj, destination, userProfile } = this.state;
         const open = Boolean(anchorEl);
 
-        const icons1 = [<DashboardIcon />];
-        const func1 = [() => this.props.history.push('/dashboard')];
+        const icons1 = [<DashboardIcon />, <FaceIcon />];
+        const func1 = [
+            () => this.props.history.push('/dashboard'),
+            () => this.props.history.push('/my_profile')
+        ];
         const icons2 = [<InboxIcon />, <StarIcon />, <SendIcon />];
         const icons3 = [<DeleteIcon />, <ErrorIcon />];
 
         const sideList = (
             <div className={classes.list}>
+            <div style={{ width: "100%", height: "200px", backgroundImage: `url(${require("../../Images/back.jpg")})`,  backgroundRepeat: 'no-repeat', backgroundSize: "cover" }}>
+          <span>
+            <Avatar src={userAvail.photoURL} className={classes.avatar} alt="Profile Picture" />
+            <br />
+            <br />
+            <br />
+            <Typography className={classes.drawerText} variant='overline'>{userAvail.displayName}</Typography>
+            <Typography className={classes.drawerText} variant='body2'>{userAvail.email}</Typography>
+          </span>
+        </div>
                 <List>
-                    {['Dashboard'].map((text, index) => (
+                    {['Dashboard', 'Profile'].map((text, index) => (
                         <ListItem button onClick={func1[index]} key={text}>
                             <ListItemIcon>{icons1[index]}</ListItemIcon>
                             <ListItemText primary={text} />
@@ -299,16 +326,16 @@ class MyAppBar extends React.Component {
             </div>
         );
 
-                                let meetingTime = notificationObj.selectedDate
-                                // console.log(value.nickName1, meetingTime)
-                                let nowTime = new Date()
-                                // console.log(nowTime)
-                                let timeDiff = moment(nowTime).diff(meetingTime);
-                                console.log('request', timeDiff)
-                                
-                                // if(timeDiff > 0 && value.status === 'PENDING' ){
-                                    // this.setMeeting(value, index, 'CANCELLED')
-                                // }
+        let meetingTime = notificationObj.selectedDate
+        // console.log(value.nickName1, meetingTime)
+        let nowTime = new Date()
+        // console.log(nowTime)
+        let timeDiff = moment(nowTime).diff(meetingTime);
+        console.log('request', timeDiff)
+
+        // if(timeDiff > 0 && value.status === 'PENDING' ){
+        // this.setMeeting(value, index, 'CANCELLED')
+        // }
 
         return (
             <div className={classes.root}>

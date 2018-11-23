@@ -22,14 +22,18 @@ class Login extends Component {
         return (
             <center>
                 <div className='mainDiv'>
-
+<br/>
+                    <img
+                        src={require("../../Images/handshake.png")}
+                        alt='meetup'
+                        width='65px'
+                        height='62px'
+                    />
                     <FormControl className="formDiv">
 
                         <Typography variant="h4" >
                             MeeTup
                         </Typography>
-                        <br />
-                        <br />
                         <br />
                         <br />
                         <Typography color='primary' variant="subheading" >
