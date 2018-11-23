@@ -4,7 +4,7 @@
   "icons": [
     {
       "src": "meetup.png",
-      "sizes": "64x64 32x32 24x24 16x16",
+      "sizes": "512x512 192x192 152x152 144x144 128x128 64x64 32x32 24x24 16x16",
       "type": "image/png"
     }
   ],
