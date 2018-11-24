@@ -108,18 +108,18 @@ const styles = theme => ({
     appBar: {
         position: 'relative',
     },
-    
+
     avatar: {
         width: 60,
         height: 60,
         top: 60,
         left: 10
-      },
-      drawerText: {
+    },
+    drawerText: {
         paddingLeft: '10px',
         // backgroundColor: '#e0f2f111',
         color: "white"
-      }
+    }
 });
 
 function Transition(props) {
@@ -287,16 +287,18 @@ class MyAppBar extends React.Component {
 
         const sideList = (
             <div className={classes.list}>
-            <div style={{ width: "100%", height: "200px", backgroundImage: `url(${require("../../Images/back.jpg")})`,  backgroundRepeat: 'no-repeat', backgroundSize: "cover" }}>
-          <span>
-            <Avatar src={userAvail.photoURL} className={classes.avatar} alt="Profile Picture" />
-            <br />
-            <br />
-            <br />
-            <Typography className={classes.drawerText} variant='overline'>{userAvail.displayName}</Typography>
-            <Typography className={classes.drawerText} variant='body2'>{userAvail.email}</Typography>
-          </span>
-        </div>
+                {userAvail &&
+                    <div style={{ width: "100%", height: "200px", backgroundImage: `url(${require("../../Images/back.jpg")})`, backgroundRepeat: 'no-repeat', backgroundSize: "cover" }}>
+                        <span>
+                            <Avatar src={userAvail.photoURL} className={classes.avatar} alt="Profile Picture" />
+                            <br />
+                            <br />
+                            <br />
+                            <Typography className={classes.drawerText} variant='overline'>{userAvail.displayName}</Typography>
+                            <Typography className={classes.drawerText} variant='body2'>{userAvail.email}</Typography>
+                        </span>
+                    </div>
+                }
                 <List>
                     {['Dashboard', 'Profile'].map((text, index) => (
                         <ListItem button onClick={func1[index]} key={text}>
@@ -331,7 +333,7 @@ class MyAppBar extends React.Component {
         let nowTime = new Date()
         // console.log(nowTime)
         let timeDiff = moment(nowTime).diff(meetingTime);
-        console.log('request', timeDiff)
+        // console.log('request', timeDiff)
 
         // if(timeDiff > 0 && value.status === 'PENDING' ){
         // this.setMeeting(value, index, 'CANCELLED')

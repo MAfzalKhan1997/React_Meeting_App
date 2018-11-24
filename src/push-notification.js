@@ -7,7 +7,7 @@ export const askForPermissioToReceiveNotifications = async () => {
 
     await messaging.requestPermission();
     const token = await messaging.getToken();
-    console.log('user token: ', token);
+    // console.log('user token: ', token);
     firebase.database().ref('/fcmTokens').child(token).set(firebase.auth().currentUser.uid);
 
     return token;

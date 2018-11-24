@@ -27,17 +27,7 @@ class Step1 extends Component {
     }
 
 
-    //   static getDerivedStateFromProps() {
-
-    //     AuthState()
-    //     const userAvail = JSON.parse(localStorage.getItem("user"));
-
-    //     return {
-    //       userAvail,
-    //     }
-    //   }
-
-    render() { 
+    render() {
         const { classes, updateText } = this.props;
         return (
             <div>
@@ -47,8 +37,8 @@ class Step1 extends Component {
                             <Person color='primary' />
                         </Grid>
                         <Grid item>
-                            <TextField id="input-with-icon-grid" name='Nickname' label="Nickname" 
-                            onChange={(e) => updateText(e) }
+                            <TextField id="input-with-icon-grid" name='Nickname' label="Nickname"
+                                onChange={(e) => updateText(e)}
                             />
                         </Grid>
                     </Grid>
@@ -59,8 +49,9 @@ class Step1 extends Component {
                             <LocalPhone color='primary' />
                         </Grid>
                         <Grid item>
-                            <TextField id="input-with-icon-grid" type='number'  name='Contact' label="Contact"
-                            onChange={(e) => updateText(e) }
+                            <TextField id="input-with-icon-grid" type='number' name='Contact' label="Contact"
+                                // inputProps= {{maxLength:11}}
+                                onChange={(e) => updateText(e)}
                             />
                         </Grid>
                     </Grid>

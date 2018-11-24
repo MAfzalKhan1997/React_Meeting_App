@@ -109,18 +109,16 @@ class DashRequests extends Component {
 
     getData() {
 
-        const { meetings } = this.state;
-
-        // this.setState({ 
-        //     meetings: []
-        // })
-
+        let { meetings } = this.state;
         const userProfile = JSON.parse(localStorage.getItem("userProfile"));
 
-        firebase.database().ref(`/meetingsArea/${userProfile.uid}/requestsSec`).on('child_added', (data) => {
+        firebase.database().ref(`/meetingsArea/${userProfile.uid}/requestsSec/`).on('value', (data) => {
+            meetings = []
+            let child = data.val()
 
-            meetings.push(data.val())
-
+            for (let key in child) {
+                meetings.push(child[key])
+            }
             this.setState({
                 meetings,
             })
@@ -133,9 +131,9 @@ class DashRequests extends Component {
         this.getData()
     }
 
-    setMeeting(meeting, index, status) {
+    setMeeting(meeting, status) {
 
-        const { meetings } = this.state;
+        // const { meetings } = this.state;
 
         const meetingObj = {
 
@@ -171,10 +169,10 @@ class DashRequests extends Component {
         return firebase.database().ref().update(updates)
             .then(resp => {
                 console.log(status, resp)
-                meetings[index] = meetingObj
-                this.setState({
-                    meetings,
-                })
+                // meetings[index] = meetingObj
+                // this.setState({
+                // meetings,
+                // })
             })
 
 
@@ -259,14 +257,16 @@ class DashRequests extends Component {
                                 ];
 
                                 let meetingTime = value.selectedDate
+                                let afterMeetingTime = moment(meetingTime).add(value.duration[0], 'm')
                                 // console.log(value.nickName1, meetingTime)
                                 let nowTime = new Date()
                                 // console.log(nowTime)
-                                let timeDiff = moment(nowTime).diff(meetingTime);
-                                console.log('request', timeDiff)
-                                
-                                if(timeDiff > 0 && value.status === 'PENDING' ){
-                                    this.setMeeting(value, index, 'CANCELLED')
+                                let timeDiff = moment(nowTime).diff(afterMeetingTime);
+                                // console.log('request', timeDiff)
+
+                                let reqTime = moment(nowTime).diff(meetingTime);
+                                if (reqTime > 0 && value.status === 'PENDING') {
+                                    this.setMeeting(value, 'CANCELLED')
                                 }
 
                                 let status;
@@ -364,7 +364,6 @@ class DashRequests extends Component {
                                         </ExpansionPanelSummary>
 
                                         <ExpansionPanelDetails className={classes.details}>
-                                            {/* <div className={classes.column} /> */}
                                             <div className={classes.column}>
                                                 <Typography variant="subheading">{value.selectedLoc.name}</Typography>
                                                 <Typography variant="body1">{value.selectedDate}</Typography>
@@ -372,7 +371,7 @@ class DashRequests extends Component {
                                             <div className={classes.helper}>
                                                 <Typography variant="body1">{value.selectedLoc.location.address}</Typography>
                                                 <Typography variant="caption">
-                                                Status: <span className={classes.link}>{status.toLowerCase()}</span>
+                                                    Status: <span className={classes.link}>{status}</span>
                                                 </Typography>
                                             </div>
                                         </ExpansionPanelDetails>
@@ -390,14 +389,14 @@ class DashRequests extends Component {
                                         <Divider />
                                         <ExpansionPanelActions>
                                             <Button size="small" disabled={value.status !== 'PENDING' ? true : false}
-                                                onClick={() => this.setMeeting(value, index, 'CANCELLED')}
+                                                onClick={() => this.setMeeting(value, 'CANCELLED')}
                                             >
                                                 Cancel
                                             </Button>
 
                                             <Button size="small" color="primary"
                                                 disabled={value.status !== 'PENDING' ? true : false}
-                                                onClick={() => this.setMeeting(value, index, 'ACCEPTED')}
+                                                onClick={() => this.setMeeting(value, 'ACCEPTED')}
                                             >
                                                 Accept
                                             </Button>

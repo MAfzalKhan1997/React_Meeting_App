@@ -21,7 +21,7 @@ class CreateProfile extends Component {
     const userAvail = JSON.parse(localStorage.getItem("user"));
     const userProfile = JSON.parse(localStorage.getItem("userProfile"));
 
-    console.log('derived', userAvail, 'derived', userProfile)
+    // console.log('derived', userAvail, 'derived', userProfile)
 
     return {
       userAvail,
@@ -29,22 +29,7 @@ class CreateProfile extends Component {
     }
 
   }
-
-  // componentDidMount() {
-
-  //   AuthState()
-  //   const userAvail = JSON.parse(localStorage.getItem("user"));
-  //   const userProfile = JSON.parse(localStorage.getItem("userProfile"));
-
-  //   console.log('did',userAvail,'did',userProfile)
-
-  //   this.setState({
-  //     userAvail,
-  //     userProfile, 
-  //   })
-
-  // }
-
+ 
   render() {
     const { userAvail, userProfile } = this.state;
     return (

@@ -109,19 +109,24 @@ class DashMeetings extends Component {
 
     getData() {
 
-        const { meeters } = this.state;
+        let { meeters } = this.state;
         const userProfile = JSON.parse(localStorage.getItem("userProfile"));
 
         // this.setState({
         //     meeters:[]
         // })
 
-        firebase.database().ref(`/meetingsArea/${userProfile.uid}/meetingsSec`).on('child_added', (data) => {
+        firebase.database().ref(`/meetingsArea/${userProfile.uid}/meetingsSec`).on('value', (data) => {
+            meeters = []
+            let child = data.val()
+            // console.log(child)
+            for (let key in child) {
+                meeters.push(child[key])
+            }
 
-            meeters.push(data.val())
-            // console.log('updated')
-            this.setState({ meeters })
-
+            this.setState({
+                meeters,
+            }) 
         })
     }
 
@@ -275,11 +280,12 @@ class DashMeetings extends Component {
                                         ];
 
                                         let meetingTime = value.selectedDate
+                                        let afterMeetingTime = moment(meetingTime).add(value.duration[0], 'm')
                                         // console.log(value.nickName1, meetingTime)
                                         let nowTime = new Date()
                                         // console.log(nowTime)
-                                        let timeDiff = moment(nowTime).diff(meetingTime);
-                                        console.log('meeting', timeDiff)
+                                        let timeDiff = moment(nowTime).diff(afterMeetingTime);
+                                        // console.log('meeting', timeDiff)
 
 
                                         let status;
@@ -369,7 +375,7 @@ class DashMeetings extends Component {
                                                 <div className={classes.helper}>
                                                     <Typography variant="body1">{value.selectedLoc.location.address}</Typography>
                                                     <Typography variant="caption">
-                                                    Status: <span className={classes.link}>{status.toLowerCase()}</span>
+                                                        Status: <span className={classes.link}>{status}</span>
                                                     </Typography>
                                                 </div>
                                             </ExpansionPanelDetails>

@@ -124,7 +124,7 @@ class MyProfileComp extends Component {
         // box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22)
         return (
             <center>
-                <Grid xs={12} sm={11} md={8} lg={6}>
+                <Grid item xs={12} sm={11} md={8} lg={6}>
                     <div className="outerDiv">
 
                         <div className="carouselDiv" >

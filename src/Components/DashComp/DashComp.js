@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 
 import DashMeetings from './DashMeetings/DashMeetings'
 import DashRequests from './DashRequests/DashRequests'
-import DashAvailable from './DashAvailable/DashAvailable'
+// import DashAvailable from './DashAvailable/DashAvailable'
 // import AuthState from '../../Helper/AuthState'
 
 import PropTypes from 'prop-types';
@@ -100,7 +100,7 @@ class DashComp extends Component {
                     >
                         <Tab label="Meetings" />
                         <Tab label="Requests" />
-                        <Tab label="Available" />
+                        {/* <Tab label="Available" /> */}
                     </Tabs>
                 </AppBar>
                 <SwipeableViews
@@ -110,7 +110,7 @@ class DashComp extends Component {
                 >
                     <TabContainer dir={theme.direction}><DashMeetings /></TabContainer>
                     <TabContainer dir={theme.direction}><DashRequests /></TabContainer>
-                    <TabContainer dir={theme.direction}><DashAvailable {...this.props} /></TabContainer>
+                    {/* <TabContainer dir={theme.direction}><DashAvailable {...this.props} /></TabContainer> */}
                 </SwipeableViews>
 
                 <Button variant="fab" color="primary" onClick={() => this.goToUsers()}
