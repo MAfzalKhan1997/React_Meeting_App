@@ -223,7 +223,7 @@ class LocSearch extends Component {
         const myProfile = JSON.parse(localStorage.getItem("userProfile"));
         // firebase.database().ref(`/profiles/${userAvail.uid}/`).once('value', (data) => {
 
-        console.log('my Profile', myProfile);
+        // console.log('my Profile', myProfile);
 
         this.setState({ myProfile }, () => this.getLoc())
     }
@@ -255,7 +255,7 @@ class LocSearch extends Component {
             }).then(result => {
                 let { searchLocations } = this.state;
                 searchLocations = result.response.venues
-                console.log("search result", searchLocations)
+                // console.log("search result", searchLocations)
                 this.setState({
                     searchLocations
                 })
@@ -273,7 +273,7 @@ class LocSearch extends Component {
             }).then(result => {
                 let { nearLocations } = this.state;
                 nearLocations = result.response.groups[0].items
-                console.log("result", nearLocations)
+                // console.log("result", nearLocations)
                 this.setState({
                     nearLocations
                 })

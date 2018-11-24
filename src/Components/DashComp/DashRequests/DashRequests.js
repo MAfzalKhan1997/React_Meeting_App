@@ -160,7 +160,7 @@ class DashRequests extends Component {
             key: meeting.key,
         }
 
-        console.log(meetingObj)
+        // console.log(meetingObj)
 
         var updates = {};
         updates[`/meetingsArea/${meeting.uid1}/meetingsSec/${meeting.uid2}/meetings/` + meeting.key] = meetingObj;
@@ -205,7 +205,7 @@ class DashRequests extends Component {
             key: meeting.key,
         }
 
-        console.log(meetingObj)
+        // console.log(meetingObj)
 
         var updates = {};
         updates[`/meetingsArea/${meeting.uid1}/meetingsSec/${meeting.uid2}/meetings/` + meeting.key] = meetingObj;
@@ -213,7 +213,7 @@ class DashRequests extends Component {
 
         return firebase.database().ref().update(updates)
             .then(resp => {
-                console.log(value, resp)
+                // console.log(value, resp)
                 // this.getData()
                 this.setState({
                     postPopup: false,
@@ -300,23 +300,25 @@ class DashRequests extends Component {
                                             <center>
                                                 <div className={classes.paper}>
 
-                                                    <Typography variant="body2" id="modal-title" className={classes.nickName} >
-                                                        Was Meeting Successfull with
-                                                         <br /><br />
-                                                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                                            <Avatar
-                                                                alt={value.nickName2}
-                                                                src={value.avatarURL2[0]}
-                                                                className={classes.popupAvatar}
-                                                            />
-                                                            <Avatar
-                                                                alt={value.nickName1}
-                                                                src={value.avatarURL1[0]}
-                                                                className={classes.popupAvatar}
-                                                            />
-                                                        </div>
-                                                        <br />
-                                                        <span style={{ fontSize: '18px' }}>{value.displayName1}</span> ?
+                                                    <Typography style={{ fontSize: '18px' }} variant="body2" id="modal-title" >
+                                                        Was Meeting Successfull with ?
+                                                                </Typography>
+                                                    <br /><br />
+                                                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                                        <Avatar
+                                                            alt={value.nickName1}
+                                                            src={value.avatarURL1[0]}
+                                                            className={classes.popupAvatar}
+                                                        />
+                                                        <Avatar
+                                                            alt={value.nickName2}
+                                                            src={value.avatarURL2[0]}
+                                                            className={classes.popupAvatar}
+                                                        />
+                                                    </div>
+                                                    <br />
+                                                    <Typography style={{ fontSize: '15px' }} variant="body2" id="modal-title">
+                                                        {value.displayName2}
                                                     </Typography>
 
                                                     <br />

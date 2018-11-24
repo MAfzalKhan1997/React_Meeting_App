@@ -111,11 +111,7 @@ class DashMeetings extends Component {
 
         let { meeters } = this.state;
         const userProfile = JSON.parse(localStorage.getItem("userProfile"));
-
-        // this.setState({
-        //     meeters:[]
-        // })
-
+ 
         firebase.database().ref(`/meetingsArea/${userProfile.uid}/meetingsSec`).on('value', (data) => {
             meeters = []
             let child = data.val()
@@ -161,7 +157,7 @@ class DashMeetings extends Component {
             key: meeting.key,
         }
 
-        console.log(meetingObj)
+        // console.log(meetingObj)
 
         var updates = {};
         updates[`/meetingsArea/${meeting.uid1}/meetingsSec/${meeting.uid2}/meetings/` + meeting.key] = meetingObj;
@@ -169,7 +165,7 @@ class DashMeetings extends Component {
 
         return firebase.database().ref().update(updates)
             .then(resp => {
-                console.log(status, resp)
+                // console.log(status, resp)
                 // this.getData()
             })
     }
@@ -201,7 +197,7 @@ class DashMeetings extends Component {
             key: meeting.key,
         }
 
-        console.log(meetingObj)
+        // console.log(meetingObj)
 
         var updates = {};
         updates[`/meetingsArea/${meeting.uid1}/meetingsSec/${meeting.uid2}/meetings/` + meeting.key] = meetingObj;
@@ -209,7 +205,7 @@ class DashMeetings extends Component {
 
         return firebase.database().ref().update(updates)
             .then(resp => {
-                console.log(value, resp)
+                // console.log(value, resp)
                 // this.getData()
                 this.setState({
                     postPopup: false,
@@ -319,8 +315,9 @@ class DashMeetings extends Component {
                                                     <center>
                                                         <div className={classes.paper}>
 
-                                                            <Typography variant="body2" id="modal-title" className={classes.nickName} >
-                                                                Was Meeting Successfull with
+                                                            <Typography style={{ fontSize: '18px' }} variant="body2" id="modal-title" >
+                                                                Was Meeting Successfull with ?
+                                                                </Typography>
                                                          <br /><br />
                                                                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                                                                     <Avatar
@@ -335,8 +332,9 @@ class DashMeetings extends Component {
                                                                     />
                                                                 </div>
                                                                 <br />
-                                                                <span style={{ fontSize: '18px' }}>{value.displayName2}</span> ?
-                                                    </Typography>
+                                                                <Typography  style={{ fontSize: '15px' }} variant="body2" id="modal-title">
+                                                                {value.displayName2}
+                                                                </Typography>
 
                                                             <br />
                                                             <Typography variant="caption" id="modal-title">

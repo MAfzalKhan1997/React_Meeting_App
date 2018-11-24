@@ -48,7 +48,7 @@ class Location extends Component {
     const { state } = this.props.location;
     return (
       <center>
-        {console.log(state)}
+        {/* {console.log(state)} */}
         <div>
           {
             userAvail ?
