@@ -42,7 +42,6 @@ const styles = theme => ({
     },
 });
 
-
 //   static getDerivedStateFromProps(props) {
 
 //     AuthState()
@@ -56,7 +55,6 @@ const styles = theme => ({
 //       userProfile, 
 //     }
 //   }
-
 
 class DashComp extends Component {
 
