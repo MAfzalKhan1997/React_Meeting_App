@@ -12,7 +12,6 @@ const styles = theme => ({
  
 });
 
-
 class Users extends Component {
 
     constructor() {
@@ -22,11 +21,9 @@ class Users extends Component {
             openSnack: false,
         }
     }
-
     
     static getDerivedStateFromProps(props) {
-        
-        
+                
         AuthState()
         const userAvail = JSON.parse(localStorage.getItem("user"));
         const userProfile = JSON.parse(localStorage.getItem("userProfile"));
