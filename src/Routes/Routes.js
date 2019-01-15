@@ -10,12 +10,10 @@ import MyProfile from '../Screens/MyProfile/MyProfile';
 // import EditProfile from '../Screens/EditProfile/EditProfile';
 
 const Routes = () => {
-
     return (
 
         <Router>
             <div>
-
                 <Route path='/' component={AppBar} />
                 <Route exact path='/' component={App} />
                 <Route exact path='/dashboard' component={Dashboard} />
@@ -30,5 +28,3 @@ const Routes = () => {
 }
 
 export default Routes;
-
-// {/* <Route path='/Users' component={Users} ></Route> */}/
